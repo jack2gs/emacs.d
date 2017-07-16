@@ -1,0 +1,128 @@
+hexo server --draft --open
+mv source/_drafts/My-First-Blog-Post.org source/_posts/
+hexo server --draft --open
+hexo server
+hexo server
+hexo server
+ls
+cd hexo-org-cache/
+ls
+cd ..
+rm -rf hexo-org-cache/
+hexo server
+hexo s
+hexo g
+hexo g
+cd source/_posts/
+cd ..
+cd _drafts/
+ls
+rm -rf *.*
+ls
+cd ..
+ls
+cd ..
+ls
+hexo s
+hexo s
+hexo s
+hexo s
+hexo s
+(node:24136) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 2): TypeError: Cannot read property 'parent' of nullls
+ls
+npm uninstall hexo-renderer-org
+- css-select@1.0.0 node_modules/hexo-renderer-org/node_modules/css-selectnpm install https://github.com/coldnew/hexo-renderer-org#coldnew --save
+npm install https://github.com/coldnew/hexo-renderer-org#coldnew --save
+hexo s
+hexo s
+hexo s
+npm un
+cd ..
+ls
+cd ..
+ls
+cd ..
+ls
+hexo server
+ls
+cd hexo-org-cache/
+ls
+ls
+ls
+cd emacs.d/
+ls
+cd ..
+ls
+man ln
+cd ..
+ls
+hexo server
+ls
+hexo server --draft --open
+ls
+cd ..
+ls
+cd ..
+ls
+cd ..
+ls
+cd orgFiles-stat-blog/
+ls
+mv get-hash-code-* ../jack2gs.github.io/source/_posts/
+ls
+cd ..
+ls
+cd jack2gs.github.io/
+ls
+cd source/
+ls
+cd _posts/
+ls
+cd ..
+ls
+cd ..
+hexo s
+ls
+cd source/
+ls
+cd images/
+ls
+cd ..
+ls
+cd _drafts/
+ls
+ls
+ls
+cd ..
+ls
+cd _posts/
+ls
+rm -rf *.html*
+rm -rf *.md*
+ls
+rm -rf 2017-07-08-asset-folder-demo/
+ls
+rm -rf My-First-Blog-Post.*
+ls
+cd ..
+ls
+cd _drafts/
+ls
+mv hexo-org-example* ../_posts/
+ls
+cd ..
+ls
+cd ..
+hexo g
+hexo d
+hexo s --draft --open
+cd WorkStation/
+ls
+mkdir reading
+cd reading/
+ls
+cd ..
+cd blog/
+ls
+cd jack2gs.github.io/
+ls

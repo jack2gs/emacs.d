@@ -1,0 +1,14 @@
+# key: hbh
+# name: Hexo blog header
+# expand-env: ((yas-indent-line nil))
+# --
+#+STARTUP: indent
+#+OPTIONS: toc:nil
+
+# metadata
+#+TITLE: ${1:BLOG TITLE}
+#+DATE: <${2:`(format-time-string "%Y-%m-%d %H:%M:%S" (current-time))`}>
+#+CATEGORIES: ${3:CATEGORIES}
+#+TAGS: ${4:TAGS}
+#+LAYOUT: ${5:default}
+
