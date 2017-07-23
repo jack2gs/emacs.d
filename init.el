@@ -250,7 +250,14 @@ marginparsep=7pt, marginparwidth=.6in}
 (setq org-latex-listings 'minted)
 (add-to-list 'org-latex-minted-langs '(csharp "csharp"))
 (setq org-latex-minted-options
-      '(("frame" "lines") ("linenos=true")))
+      '(
+	("linenos=true")
+;;	("mathescape=true")
+;;        ("numbersep=5pt")
+;;        ("gobble=2")
+        ("frame=lines")
+;;        ("framesep=2mm")
+	))
 (setq org-latex-pdf-process
         '("xelatex -8bit -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
