@@ -1,28 +1,3 @@
-hexo server --draft --open
-mv source/_drafts/My-First-Blog-Post.org source/_posts/
-hexo server --draft --open
-hexo server
-hexo server
-hexo server
-ls
-cd hexo-org-cache/
-ls
-cd ..
-rm -rf hexo-org-cache/
-hexo server
-hexo s
-hexo g
-hexo g
-cd source/_posts/
-cd ..
-cd _drafts/
-ls
-rm -rf *.*
-ls
-cd ..
-ls
-cd ..
-ls
 hexo s
 hexo s
 hexo s
@@ -126,3 +101,28 @@ cd blog/
 ls
 cd jack2gs.github.io/
 ls
+cd
+ls
+cd .emacs.d/
+git status
+git add .gitignore
+git commit -m "ignore elpa"
+git push orgin master
+git push origin master
+git rm --cached *~
+git status
+git commit -m 'unversion backup files'
+git push origin master
+git add LICENSE 
+git commit -m "Add LICENSE file"
+git push origin master
+cd ~/WorkStation/blog/jack2gs.github.io/
+hexo s
+hexo s
+source ~/.bash_profile.pysave
+source ~/.bash_profile
+cd $BLOG
+cd $BLOG
+echo $BLOG
+echo $BLOG
+echo $PATH
