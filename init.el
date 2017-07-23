@@ -248,12 +248,14 @@ marginparsep=7pt, marginparwidth=.6in}
 ("\\paragraph{%s}" . "\\paragraph*{%s}")
 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-;; 使用Listings宏包格式化源代码(只是把代码框用listing环境框起来，还需要额外的设置)
+;; use minted to hightlight the source code
 (add-to-list 'org-latex-packages-alist '("" "minted"))
 (setq org-latex-listings 'minted)
 (add-to-list 'org-latex-minted-langs '(csharp "csharp"))
 (setq org-latex-minted-options
-     '(("frame" "lines") ("linenos=true")))
+      '(("frame" "lines") ("linenos=true")))
+(setq org-latex-pdf-process
+        '("xelatex -8bit -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
 ;; Options for \lset command（reference to listing Manual)
 ;;(setq org-latex-listings-options
