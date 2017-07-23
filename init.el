@@ -130,9 +130,6 @@
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-
-
-
 ;; set the theme to solarized-dark
 (load-theme 'sanityinc-solarized-dark)
 
@@ -257,31 +254,3 @@ marginparsep=7pt, marginparwidth=.6in}
 (setq org-latex-pdf-process
         '("xelatex -8bit -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
-;; Options for \lset command（reference to listing Manual)
-;;(setq org-latex-listings-options
-;;      '(
-;;        ("basicstyle" "\\color{foreground}\\small\\mono")           ; 源代码字体样式
-;;        ("keywordstyle" "\\color{function}\\bfseries\\small\\mono") ; 关键词字体样式
-;;        ("identifierstyle" "\\color{doc}\\small\\mono")
-;;        ("commentstyle" "\\color{comment}\\small\\itshape")         ; 批注样式
-;;        ("stringstyle" "\\color{string}\\small")                    ; 字符串样式
-;;        ("showstringspaces" "false")                                ; 字符串空格显示
-;;        ("numbers" "left")                                          ; 行号显示
-;;        ("numberstyle" "\\color{preprocess}")                       ; 行号样式
-;;        ("stepnumber" "1")                                          ; 行号递增
-;;        ("backgroundcolor" "\\color{background}")                   ; 代码框背景色
-;;        ("tabsize" "4")                                             ; TAB等效空格数
-;;        ("captionpos" "t")                                          ; 标题位置 top or buttom(t|b)
-;;        ("breaklines" "true")                                       ; 自动断行
-;;        ("breakatwhitespace" "true")                                ; 只在空格分行
-;;        ("showspaces" "false")                                      ; 显示空格
-;;        ("columns" "flexible")                                      ; 列样式
-;;        ("frame" "single")                                          ; 代码框：阴影盒
-;;        ("frameround" "tttt")                                       ; 代码框： 圆角
-;;        ("framesep" "0pt")
-;;        ("framerule" "8pt")
-;;        ("rulecolor" "\\color{background}")
-;;        ("fillcolor" "\\color{white}")
-;;        ("rulesepcolor" "\\color{comdil}")
-;;        ("framexleftmargin" "10mm")
-;;        ))
