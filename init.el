@@ -266,3 +266,9 @@ marginparsep=7pt, marginparwidth=.6in}
 (add-hook 'visual-line-mode-hook 'visual-fill-column-mode)
 (global-visual-line-mode)
 
+;; disable terminal theme
+(defun on-after-init ()
+  (unless (display-graphic-p (selected-frame))
+    (set-face-background 'default "unspecified-bg" (selected-frame))))
+
+(add-hook 'window-setup-hook 'on-after-init)
