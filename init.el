@@ -18,7 +18,7 @@
  '(markdown-command "/usr/local/bin/pandoc")
  '(package-selected-packages
    (quote
-    (visual-fill-column pandoc-mode chinese-fonts-setup cl-lib-highlight org-plus-contrib yasnippet htmlize color-theme-sanityinc-solarized exec-path-from-shell find-file-in-project ## evil markdown-mode markdown-mode+ omnisharp tide))))
+    (magit py-autopep8 elpy ein better-defaults visual-fill-column pandoc-mode chinese-fonts-setup cl-lib-highlight org-plus-contrib yasnippet htmlize color-theme-sanityinc-solarized exec-path-from-shell find-file-in-project ## evil markdown-mode markdown-mode+ omnisharp tide))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -272,3 +272,31 @@ marginparsep=7pt, marginparwidth=.6in}
     (set-face-background 'default "unspecified-bg" (selected-frame))))
 
 (add-hook 'window-setup-hook 'on-after-init)
+
+;; python configration
+(defvar myPackages
+  '(better-defaults
+    ein
+    elpy
+    flycheck
+    py-autopep8))
+
+(mapc #'(lambda (package)
+    (unless (package-installed-p package)
+      (package-install package)))
+      myPackages)
+
+
+(elpy-enable)
+(setq python-shell-completion-native-enable nil) ;; important! otherwise error happens.
+(elpy-use-ipython)
+
+;; use flycheck not flymake with elpy
+(when (require 'flycheck nil t)
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+;; enable autopep8 formatting on save
+(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+
+;; python configration end
