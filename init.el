@@ -3,6 +3,7 @@
 (setq package-archives '(("gnu" . "https://elpa.emacs-china.org/gnu/") 
 			 ("melpa-stable" . "https://elpa.emacs-china.org/melpa-stable/")))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 
 (package-initialize)
 (custom-set-variables
@@ -275,8 +276,7 @@ marginparsep=7pt, marginparwidth=.6in}
 
 ;; python configration
 (defvar myPackages
-  '(better-defaults
-    ein
+  '(ein
     elpy
     flycheck
     py-autopep8))
@@ -286,9 +286,7 @@ marginparsep=7pt, marginparwidth=.6in}
       (package-install package)))
       myPackages)
 
-
 (elpy-enable)
-(setq python-shell-completion-native-enable nil) ;; important! otherwise error happens.
 (elpy-use-ipython)
 
 ;; use flycheck not flymake with elpy
@@ -297,6 +295,13 @@ marginparsep=7pt, marginparwidth=.6in}
   (add-hook 'elpy-mode-hook 'flycheck-mode))
 
 ;; enable autopep8 formatting on save
+(require 'py-autopep8)
 (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
 
+(setq python-shell-completion-native-enable nil)
+;; For elpy
+(setq elpy-rpc-python-command "/usr/local/bin/python3")
+;; For interactive shell
+(setq python-shell-interpreter "/usr/local/bin/ipython3")
+(setenv "IPY_TEST_SIMPLE_PROMPT" "1")
 ;; python configration end
