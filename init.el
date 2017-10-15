@@ -19,7 +19,7 @@
  '(markdown-command "/usr/local/bin/pandoc")
  '(package-selected-packages
    (quote
-    (magit py-autopep8 elpy ein better-defaults visual-fill-column pandoc-mode chinese-fonts-setup cl-lib-highlight org-plus-contrib yasnippet htmlize color-theme-sanityinc-solarized exec-path-from-shell find-file-in-project ## evil markdown-mode markdown-mode+ omnisharp tide))))
+    (yaml-mode magit py-autopep8 elpy ein better-defaults visual-fill-column pandoc-mode chinese-fonts-setup cl-lib-highlight org-plus-contrib yasnippet htmlize color-theme-sanityinc-solarized exec-path-from-shell find-file-in-project ## evil markdown-mode markdown-mode+ omnisharp tide))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -67,8 +67,10 @@
    (python     . t)
    (ruby       . t)
    (dot        . t)
+   (ditaa      . t)
    (latex      . t)
    (java       . t)
+   (R          . t)
    (plantuml   . t)))
 
 ;; path to plantuml
@@ -305,3 +307,6 @@ marginparsep=7pt, marginparwidth=.6in}
 (setq python-shell-interpreter "/usr/local/bin/ipython3")
 (setenv "IPY_TEST_SIMPLE_PROMPT" "1")
 ;; python configration end
+
+;; enable ess
+(require 'ess-site)

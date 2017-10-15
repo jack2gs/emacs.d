@@ -11,4 +11,10 @@
 #+CATEGORIES: ${3:CATEGORIES}
 #+TAGS: ${4:TAGS}
 #+LAYOUT: ${5:default}
+#+LATEX_HEADER: \documentclass{article}
+#+LATEX_CLASS_OPTIONS: [a4paper]
+#+LATEX_HEADER: \usepackage{xeCJK}
+#+LATEX_HEADER: \usepackage{minted}
+#+LATEX_HEADER: \usepackage[margin=2cm]{geometry}
+#+LATEX_HEADER: \setminted{fontsize=\small,baselinestretch=1}
 

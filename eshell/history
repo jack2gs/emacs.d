@@ -1,115 +1,3 @@
-- css-select@1.0.0 node_modules/hexo-renderer-org/node_modules/css-selectnpm install https://github.com/coldnew/hexo-renderer-org#coldnew --save
-npm install https://github.com/coldnew/hexo-renderer-org#coldnew --save
-hexo s
-hexo s
-hexo s
-npm un
-cd ..
-ls
-cd ..
-ls
-cd ..
-ls
-hexo server
-ls
-cd hexo-org-cache/
-ls
-ls
-ls
-cd emacs.d/
-ls
-cd ..
-ls
-man ln
-cd ..
-ls
-hexo server
-ls
-hexo server --draft --open
-ls
-cd ..
-ls
-cd ..
-ls
-cd ..
-ls
-cd orgFiles-stat-blog/
-ls
-mv get-hash-code-* ../jack2gs.github.io/source/_posts/
-ls
-cd ..
-ls
-cd jack2gs.github.io/
-ls
-cd source/
-ls
-cd _posts/
-ls
-cd ..
-ls
-cd ..
-hexo s
-ls
-cd source/
-ls
-cd images/
-ls
-cd ..
-ls
-cd _drafts/
-ls
-ls
-ls
-cd ..
-ls
-cd _posts/
-ls
-rm -rf *.html*
-rm -rf *.md*
-ls
-rm -rf 2017-07-08-asset-folder-demo/
-ls
-rm -rf My-First-Blog-Post.*
-ls
-cd ..
-ls
-cd _drafts/
-ls
-mv hexo-org-example* ../_posts/
-ls
-cd ..
-ls
-cd ..
-hexo g
-hexo d
-hexo s --draft --open
-cd WorkStation/
-ls
-mkdir reading
-cd reading/
-ls
-cd ..
-cd blog/
-ls
-cd jack2gs.github.io/
-ls
-cd
-ls
-cd .emacs.d/
-git status
-git add .gitignore
-git commit -m "ignore elpa"
-git push orgin master
-git push origin master
-git rm --cached *~
-git status
-git commit -m 'unversion backup files'
-git push origin master
-git add LICENSE 
-git commit -m "Add LICENSE file"
-git push origin master
-cd ~/WorkStation/blog/jack2gs.github.io/
-hexo s
 hexo s
 source ~/.bash_profile.pysave
 source ~/.bash_profile
@@ -126,3 +14,115 @@ ls
 cd org-mode/
 ls
 less hexo-blog-more-tag
+ls
+cd .emacs.d/
+ls
+git status
+git add .
+git status
+git commit -m 'disable terminal theme'
+git push origin master
+git push origin master
+brew install Openfire
+brew install ant
+emacs ~/.bash_profile
+brew install Openfire
+exit
+mysql_secure_installation 
+mysql_secure_installation 
+brew uninstall mysql
+brew uninstall mysql
+brew install mysql
+mysql_secure_installation
+brew uninstall mysql
+docker
+brew cask install docker
+brew install docker
+docker --version
+docker --version
+brew install docker
+brew link docker
+docker
+docker-machine create --engine-registry-mirror=https://xq5wl4bh.mirror.aliyuncs.com -d virtualbox default
+ls
+eval $(/usr/local/bin/docker-machine env default)
+ls
+cd Inbox/
+ls
+cd TDD/GOOS/
+ls
+cd goos-code/
+ls
+ant
+ls
+hier
+man hier
+cd
+ls
+cd /
+ls
+mkdir srv
+sudo mkdir srv
+ls
+cd src
+cd srv
+ls
+mkdir docker
+sudo mkdir docker
+ls
+ls
+cd docker/
+ls
+cd ..
+cd ..
+ls
+ls srv
+ls -al srv
+ls -al ~
+ls -al /Users/song/
+ls -al srv
+man chown
+ls
+chown -R song srv
+sudo chown -R song srv
+ls -al srv
+cd srv
+ls
+cd docker/
+ls
+ls
+ls
+mkdir openfire
+ls
+cd openfire/
+ls
+docker run --name openfire -d --restart=always \  --publish 9090:9090 --publish 5222:5222 --publish 7777:7777 \  --volume /srv/docker/openfire:/var/lib/openfire \  sameersbn/openfire:3.10.3-19
+docker run --name openfire -d --restart=always \  --publish 9090:9090 --publish 5222:5222 --publish 7777:7777 \  --volume /srv/docker/openfire:/var/lib/openfire \  sameersbn/openfire:3.10.3-19
+chown -R song srvcd
+cd 
+cd Inbox/
+ls
+cd TDD/GOOS/goos-code/
+ls
+ls
+ant
+ant
+ls
+cd ..
+cd ..
+ls
+hexo s
+cd
+ls
+cd .emacs.d/
+ls
+cd elpa/
+ls
+cd org-20170925/
+ls
+cd etc
+ls
+cd ..
+ls
+cd ..
+ls

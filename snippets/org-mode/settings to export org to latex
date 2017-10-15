@@ -1,4 +1,4 @@
-# key: etl
+# key: lth
 # name: settings to export org to latex
 # --
 #+LATEX_HEADER: \documentclass{article}

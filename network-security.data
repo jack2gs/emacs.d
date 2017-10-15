@@ -1,4 +1,5 @@
 (
+ (:id "sha1:85457c729378cc93c732b6a3941c8e4f9c2e60f3" :fingerprint "sha1:ab:a6:d7:6a:b3:d3:63:fa:19:0d:65:41:60:23:6e:ef:d3:2a:46:dc" :host "marmalade-repo.org:443" :conditions (:insecure :unknown-ca :invalid))
+ (:id "sha1:306e34699eeabfc90ddbe0b5d0fd1655957338b5" :fingerprint "sha1:db:cf:80:2b:7d:99:04:3b:24:4d:42:7c:bd:33:7e:71:cd:3d:e0:e0" :host "elpa.emacs-china.org:443" :conditions (:insecure :unknown-ca :invalid))
  (:id "sha1:7ab485a1d194b34a959929275cb2e64b40647f92" :fingerprint "sha1:c9:4f:05:0e:50:48:da:fd:71:ee:ca:36:bf:ab:10:0a:52:70:16:99" :host "jack2gs.github.io:443" :conditions (:insecure :unknown-ca :invalid))
- (:id "sha1:306e34699eeabfc90ddbe0b5d0fd1655957338b5" :fingerprint "sha1:52:39:0c:73:4e:5b:e5:85:92:c7:b0:bb:83:70:22:ae:89:56:6c:e2" :host "elpa.emacs-china.org:443" :conditions (:insecure :unknown-ca :invalid))
 )

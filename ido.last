@@ -1,0 +1,72 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/Users/song/WorkStation/blog/jack2gs.github.io/source/_posts/" . "write-maintainale-software/")
+ ("/Users/song/WorkStation/blog/jack2gs.github.io/source/" . "_posts/")
+ ("/Users/song/WorkStation/blog/jack2gs.github.io/" . "source/")
+ ("/Users/song/WorkStation/blog/" . "jack2gs.github.io/")
+ ("/Users/song/" . "WorkStation/")
+ ("/Users/" . "song/")
+ ("/" . "Users/")
+ ("/Users/song/WorkStation/technology/" . "Python/")
+ ("/Users/song/WorkStation/" . "blog/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "/Users/song/WorkStation/blog/jack2gs.github.io/source/_posts/"
+ "/Users/song/WorkStation/blog/jack2gs.github.io/source/_posts/write-maintainale-software/"
+ "/Users/song/.emacs.d/"
+ "/Users/song/WorkStation/technology/Python/"
+ "/Users/song/"
+ "/Users/song/WorkStation/technology/Python/use-emacs-as-ide/"
+)
+
+;; ----- ido-work-file-list -----
+(
+ "write-maintainale-software.org"
+ "read-wirte.png"
+ "init.el"
+ "filter-passowrd.py"
+ "playground.py"
+ ".bash_profile"
+ "use-emacs-as-python-ide.org"
+ "hello-world.py"
+ ".CFUserTextEncoding"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/usr/share/emacs/site-lisp/" (22468 57142 0 0) "subdirs.el" "site-start.el" "default.el" "../" "./")
+
+ ("/Users/song/WorkStation/blog/jack2gs.github.io/source/_posts/" (23011 3269 0 0) "write-maintainale-software\\read-wirte.png" "write-maintainale-software.tex" "write-maintainale-software.pdf" "write-maintainale-software.org" "write-maintainale-software.html" "write-maintainale-software
+ead-wirte.png" "write-maintainale-software/" "vocabulary-notebook.org~" "vocabulary-notebook.org" "use-emacs-as-python-ide.tex" "use-emacs-as-python-ide.pdf" "use-emacs-as-python-ide.org" "understanding-uml-class-relationships.org~" "understanding-uml-class-relationships.org" "understanding-uml-class-relationships/" "Rplots.pdf" "python-matplot-fig.png" "hexo-org-example.org" "hexo-org-example/" "get-hash-code-and-equals.org~" "get-hash-code-and-equals.org" "get-hash-code-and-equals/" "file-system-hierarchy.tex" "file-system-hierarchy.pdf" "file-system-hierarchy.org~" "file-system-hierarchy.org" "export-org-mode-to-pdf.org~" "export-org-mode-to-pdf.org" "dirs.png" "core-csharp-programming-constructs-2.tex" "core-csharp-programming-constructs-2.pdf" "core-csharp-programming-constructs-2.org~" "core-csharp-programming-constructs-2.org" "core-csharp-programming-constructs-2/" "background-and-foreground-thread.org" "adobe-acrobat-reader-dc-icon-problem.org" "a-formalized-disposal-pattern.org" "_minted-write-maintainale-software/" "_minted-use-emacs-as-python-ide/" "_minted-file-system-hierarchy/" "4.png" ".DS_Store" ".#vocabulary-notebook.org" "#vocabulary-notebook.org#" "../" "./")
+
+ ("/Users/song/.emacs.d/" (23011 3838 0 0) "url/" "tramp" "snippets/" "README.org" "network-security.data" "LICENSE~" "LICENSE" "init.el~" "init.el" "ido.last" "games/" "eshell/" "elpa/" "backups/" "auto-save-list/" "abbrev_defs" ".org-id-locations" ".gitignore" ".git/" ".DS_Store" "#diary#" "../" "./")
+
+ ("/Users/song/WorkStation/blog/jack2gs.github.io/source/_posts/write-maintainale-software/" (23000 20264 0 0) "read-wirte.png" "../" "./")
+
+ ("/Users/song/" (23010 63377 0 0) "百度云同步盘/" "WorkStation/" "Public/" "Pictures/" "Personal/" "Parallels/" "package-lock.json" "node_modules/" "Music/" "Movies/" "Library/" "Inbox/" "Downloads/" "Documents/" "Desktop/" "Archive/" "Applications (Parallels)/" "Applications/" ".zshrc" ".zlogin" ".yo-rc-global.json" ".xvimrc" ".Xauthority" ".wget-hsts" ".vscode/" ".vimviews/" ".vimundo/" ".vimswap/" ".vimrc.local" ".vimrc.bundles" ".vimrc.before" ".vimrc.20161106_1478415039" ".vimrc" ".viminfo" ".vimbackup/" ".vim.20170228_1488288197/" ".vim.20170228_1488287761/" ".vim.20161106_1478419186/" ".vim.20161106_1478418416/" ".vim.20161106_1478416906/" ".vim.20161106_1478416677/" ".vim.20161106_1478415039/" ".vim/" ".v8flags.5.1.281.88.song.json" ".tsd-cache/" ".Trash/" ".tooling/" ".templateengine/" ".subversion/" ".ssh/" ".sqlite_history" ".spf13-vim-3/" ".sogouinput/" ".rvm/" ".rnd" ".python_history" ".pyenv/" ".profile" ".pip/" ".p2/" ".org-timestamps/" ".oracle_jre_usage/" ".omnisharp/" ".nuget/" ".npmrc" ".npm/" ".node_repl_history" ".node-gyp/" ".mysql_history" ".mono/" ".mkshrc" ".matplotlib/" ".local/" ".lldb/" ".lesshst" ".jenkins/" ".java/" ".irb-history" ".ipython/" ".idlerc/" ".httpie/" ".gradle/" ".gitignore_global" ".gitconfig" ".gemrc" ".gem/" ".freeplane/" ".freemind/" ".epubee_magic/" ".emulator_console_auth_token" ".emacs.d/" ".eclipse/" ".DS_Store" ".dotnet/" ".docker/" ".config/" ".cocoapods/" ".CFUserTextEncoding" ".cache/" ".bundle/" ".bashrc" ".bash_sessions/" ".bash_profile~" ".bash_profile.pysave" ".bash_profile" ".bash_history" ".atom/" ".aspnet/" ".AndroidStudio2.1/" "#a.c#" "../" "./")
+
+ ("/Users/song/WorkStation/technology/Python/" (22996 39084 0 0) "use-emacs-as-ide/" "playground.tex" "playground.pdf" "playground.org" "playground.html" "hello-world.py" "filter-passowrd.py" "_minted-playground/" ".DS_Store" "../" "./")
+
+ ("/Users/song/WorkStation/technology/Python/use-emacs-as-ide/" (22993 47826 0 0) "use-emacs-as-python-ide.tex" "use-emacs-as-python-ide.pdf" "use-emacs-as-python-ide.org~" "use-emacs-as-python-ide.org" "_minted-use-emacs-as-python-ide/" "../" "./")
+
+ ("/Users/song/WorkStation/blog/jack2gs.github.io/source/" (22880 15641 0 0) "tags/" "images/" "favicon.ico" "categories/" "about/" "_posts/" "_drafts/" ".DS_Store" "../" "./")
+
+ ("/Users/song/WorkStation/blog/jack2gs.github.io/public/" (22993 48038 0 0) "tags/" "page/" "lib/" "js/" "index.html" "images/" "favicon.ico" "css/" "categories/" "archives/" "about/" "2017/" "../" "./")
+
+ ("/Users/song/WorkStation/blog/jack2gs.github.io/" (22909 45095 0 0) "themes/" "source/" "scaffolds/" "public/" "package.json" "package-lock.json" "node_modules/" "hexo-org-cache.bk/" "hexo-org-cache/" "db.json" "_config.yml~" "_config.yml" ".gitignore" ".DS_Store" ".deploy_git/" "../" "./")
+
+ ("/Users/song/WorkStation/blog/" (22887 34403 0 0) "readme.org" "jack2gs.github.io/" "inbox/" "archive/" ".DS_Store" "../" "./")
+
+ ("/Users/" (22498 34867 0 0) "song/" "Shared/" "Guest/" ".localized" "../" "./")
+
+ ("/Users/song/WorkStation/technology/" (22993 37320 0 0) "Refactoring/" "Python/" ".DS_Store" "../" "./")
+
+ ("/Users/song/WorkStation/" (22993 37309 0 0) "technology/" "software-engineer/" "software-design/" "reading/" "project/" "open-source/" "emacs-practice/" "draw.io/" "code/" "blog/" ".DS_Store" "../" "./")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t
