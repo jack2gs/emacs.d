@@ -1,0 +1,1 @@
+("~/WorkStation/blog/jack2gs.github.io/" "~/WorkStation/blog/jack2gs.github.io/themes/next/" "~/WorkStation/blog/jack2gs.github.io/source/" "~/.emacs.d/")

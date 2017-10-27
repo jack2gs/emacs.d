@@ -1,6 +1,16 @@
+;;; init.el --- init emacs
+;;; Commentary:
+;; init Emacs
+;; now just use one file.
+;; later on, it needs to split it.
+
+;;; Code:
 ;; add and enable melpa
+(setq tramp-default-method "ssh")
+(setq tramp-ssh-controlmaster-options "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no")
+
 (require 'package)
-(setq package-archives '(("gnu" . "https://elpa.emacs-china.org/gnu/") 
+(setq package-archives '(("gnu" . "https://elpa.emacs-china.org/gnu/")
 			 ("melpa-stable" . "https://elpa.emacs-china.org/melpa-stable/")))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
@@ -19,7 +29,7 @@
  '(markdown-command "/usr/local/bin/pandoc")
  '(package-selected-packages
    (quote
-    (yaml-mode magit py-autopep8 elpy ein better-defaults visual-fill-column pandoc-mode chinese-fonts-setup cl-lib-highlight org-plus-contrib yasnippet htmlize color-theme-sanityinc-solarized exec-path-from-shell find-file-in-project ## evil markdown-mode markdown-mode+ omnisharp tide))))
+    (projectile plantuml-mode yaml-mode magit py-autopep8 elpy ein better-defaults visual-fill-column pandoc-mode chinese-fonts-setup cl-lib-highlight org-plus-contrib yasnippet htmlize color-theme-sanityinc-solarized exec-path-from-shell find-file-in-project ## evil markdown-mode markdown-mode+ omnisharp tide))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -28,16 +38,17 @@
  )
 
 (defun setup-tide-mode ()
-    (interactive)
-      (tide-setup)
-        (flycheck-mode +1)
-          (setq flycheck-check-syntax-automatically '(save mode-enabled))
-            (eldoc-mode +1)
-              (tide-hl-identifier-mode +1)
-                ;; company is an optional dependency. you have to
-                  ;; install it separately via package-install
-                    ;; `m-x package-install [ret] company`
-                      (company-mode +1))
+  "Set up tide mode."
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. you have to
+  ;; install it separately via package-install
+  ;; `m-x package-install [ret] company`
+  (company-mode +1))
 
 ;; aligns annotation to the right hand side
 (setq company-tooltip-align-annotations t)
@@ -76,6 +87,11 @@
 ;; path to plantuml
 (setq org-plantuml-jar-path
       (expand-file-name "/opt/jar/plantuml/plantuml.jar"))
+(setq plantuml-jar-path org-plantuml-jar-path)
+
+;; flycheck-plantuml
+(require 'flycheck-plantuml)
+(flycheck-plantuml-setup)
 
 ;; Org Publish to Stat Blog to Jekyll config Added 11 Jun 2017
 ;; http://orgmode.org/worg/org-tutorials/org-jekyll.html and
@@ -94,7 +110,7 @@
      :publishing-directory "~/WorkStation/blog/jack2gs.github.io/source/_posts"
      :recursive t
      :publishing-function org-html-publish-to-html
-     :headline-levels 4 
+     :headline-levels 4
      :html-extension "html"
      :body-only t ;; Only export section between <body> </body>
   )
@@ -138,9 +154,9 @@
 (load-theme 'sanityinc-solarized-dark)
 
 ;; close the tool-bar, menu-bar and scroll-bar
-(tool-bar-mode 0)  
-(menu-bar-mode 0)  
-(scroll-bar-mode 0)  
+(tool-bar-mode 0)
+(menu-bar-mode t)
+(scroll-bar-mode 0)
 
 ;; to automatically load omnisharp-emacs when editing csharp files
 (add-hook 'csharp-mode-hook 'omnisharp-mode)
@@ -154,22 +170,22 @@
 ;; enable yasnippet
 (yas-global-mode t)
 
-;; -----------------------------------------------------------------------------  
-;; setting font for mac system  
-;; -----------------------------------------------------------------------------  
+;; -----------------------------------------------------------------------------
+;; setting font for mac system
+;; -----------------------------------------------------------------------------
 ;; Setting English Font
 (defun s-font()
   (interactive)
   ;; font config for org table showing.
-  (set-face-attribute  
-   'default nil :font "Monaco 12")  
-;; Chinese Font 配制中文字体  
-  (dolist (charset '(kana han symbol cjk-misc bopomofo))  
-    (set-fontset-font (frame-parameter nil 'font)  
-                    charset  
-                    (font-spec :family "Microsoft YaHei" :size 14))))  
+  (set-face-attribute
+   'default nil :font "Monaco 12")
+;; Chinese Font 配制中文字体
+  (dolist (charset '(kana han symbol cjk-misc bopomofo))
+    (set-fontset-font (frame-parameter nil 'font)
+                    charset
+                    (font-spec :family "Microsoft YaHei" :size 14))))
 ;; tune rescale so that Chinese character width = 2 * English character width
-;;(setq face-font-rescale-alist '(("Monaco" . 1.0) ("Microsoft YaHei" . 1.23)))
+;; (setq face-font-rescale-alist '(("Monaco" . 1.0) ("Microsoft YaHei" . 1.23)))
 (add-to-list 'after-make-frame-functions
              (lambda (new-frame)
                (select-frame new-frame)
@@ -211,9 +227,9 @@ linkcolor=blue,
 urlcolor=blue,
 menucolor=blue]{hyperref}
 \\usepackage{fontspec,xunicode,xltxtra}
-\\setmainfont[BoldFont=Adobe Heiti Std]{Adobe Song Std}  
-\\setsansfont[BoldFont=Adobe Heiti Std]{AR PL UKai CN}  
-\\setmonofont{Bitstream Vera Sans Mono}  
+\\setmainfont[BoldFont=Adobe Heiti Std]{Adobe Song Std}
+\\setsansfont[BoldFont=Adobe Heiti Std]{AR PL UKai CN}
+\\setmonofont{Bitstream Vera Sans Mono}
 \\newcommand\\fontnamemono{AR PL UKai CN}%等宽字体
 \\newfontinstance\\MONO{\\fontnamemono}
 \\newcommand{\\mono}[1]{{\\MONO #1}}
@@ -271,6 +287,7 @@ marginparsep=7pt, marginparwidth=.6in}
 
 ;; disable terminal theme
 (defun on-after-init ()
+  "Disable terminal theme."
   (unless (display-graphic-p (selected-frame))
     (set-face-background 'default "unspecified-bg" (selected-frame))))
 
@@ -310,3 +327,24 @@ marginparsep=7pt, marginparwidth=.6in}
 
 ;; enable ess
 (require 'ess-site)
+
+;; enable flycheck globally
+(global-flycheck-mode)
+
+;; enable company
+(global-company-mode t)
+
+;; enable helm mode
+(require 'helm-config)
+(global-set-key (kbd "M-x") #'helm-M-x)
+(global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
+(global-set-key (kbd "C-x C-f") #'helm-find-files)
+(helm-mode t)
+
+;; projectile setup
+(projectile-global-mode)
+(setq projectile-completion-system 'helm)
+(helm-projectile-on)
+
+(provide 'init)
+;;; init.el ends here
