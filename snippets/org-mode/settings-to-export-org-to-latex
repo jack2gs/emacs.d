@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: settings to export org to latex
-# key: etls
-# --
-#+LATEX_HEADER: \documentclass{article}
-#+LATEX_CLASS_OPTIONS: [a4paper]
-#+LATEX_HEADER: \usepackage{xeCJK}
-#+LATEX_HEADER: \usepackage{minted}
-#+LATEX_HEADER: \usepackage[margin=2cm]{geometry}

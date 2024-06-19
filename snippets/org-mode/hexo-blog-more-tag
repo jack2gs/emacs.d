@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: Hexo blog more tag
-# key: hbm
-# --
-#+HTML: <!-- more -->
