@@ -50,7 +50,6 @@
                 (marker-is-point-p (car (reverse global-mark-ring))))
       (push-mark))))
 
-
 (defun backward-global-mark () 
   "use `pop-global-mark', pushing current point if not on ring."
   (interactive)
@@ -407,21 +406,9 @@
   :hook (dired-mode . treemacs-icons-dired-enable-once)
   :ensure t)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes 'nil)
- '(global-whitespace-newline-mode t)
- '(package-selected-packages
-   '(visible-mark zenburn-theme winum which-key wgrep-ag vertico use-package treemacs-projectile treemacs-icons-dired shell-pop orderless multiple-cursors marginalia lsp-ui kind-icon flycheck expand-region embark-consult dap-mode corfu-terminal consult-projectile all-the-icons)))
+;; Set custom file
+(setq custom-file (expand-file-name "custom-vars.el" user-emacs-directory))
+(load custom-file)
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 (provide 'init)
 ;;; init.el ends here

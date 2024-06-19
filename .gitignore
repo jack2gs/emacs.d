@@ -46,3 +46,6 @@ elpa
 
 \#*
 *~
+custom-vars.el
+history
+recentf
