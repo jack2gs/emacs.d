@@ -26,6 +26,8 @@
 ;; keep a list of recently opened files
 (require 'recentf)
 (recentf-mode 1)
+(setq-default tab-width 4)
+(setq-default indent-tabs-mode nil)
 
 ;; dired
 (setq dired-dwim-target t)
