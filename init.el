@@ -70,8 +70,15 @@
   (call-interactively 'pop-global-mark)
   (setq global-mark-ring (nreverse global-mark-ring)))
 
-(global-set-key [M-left] (quote backward-global-mark))
-(global-set-key [M-right] (quote forward-global-mark))
+;; Terminal specific key bindings
+(unless (display-graphic-p)
+  (global-set-key (kbd "ESC <left>") 'backward-global-mark)
+  (global-set-key (kbd "ESC <right>") 'forward-global-mark))
+
+;; GUI specific key bindings
+(when (display-graphic-p)
+  (global-set-key (kbd "M-<left>") 'backward-global-mark)
+  (global-set-key (kbd "M-<right>") 'forward-global-mark))
 
 (use-package visible-mark
   :ensure t
