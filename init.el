@@ -103,7 +103,6 @@
     (shell-pop-term-shell "/bin/zsh"))
    (t
     (shell-pop-term-shell "/bin/bash")))
-  (shell-pop-term-shell "/bin/bash")
   (shell-pop-universal-key "C-t")
   (shell-pop-window-size 30)
   (shell-pop-full-span t)
@@ -252,24 +251,6 @@
   :ensure t
   :if (display-graphic-p))
 
-;; (use-package doom-themes
-;;   :ensure t
-;;   :config
-;;   ;; Global settings (defaults)
-;;   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-;;         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-;;   (load-theme 'doom-zenburn t)
-;; ;; Enable flashing mode-line on errors
-;; (doom-themes-visual-bell-config)
-;; ;; Enable custom neotree theme (all-the-icons must be installed!)
-;; ;;(doom-themes-neotree-config)
-;; ;; or for treemacs users
-;; ;;(setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
-;; ;;(doom-themes-treemacs-config)
-;; ;; Corrects (and improves) org-mode's native fontification.
-;; ;;(doom-themes-org-config)
-;; )
-
 (use-package avy
   :ensure t
   :init
@@ -319,11 +300,10 @@
   ;;(add-hook 'lsp-on-idle-hook #'imenu-list-update)
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
          (c-mode . lsp)
-	 (c++-mode . lsp)
+		 (c++-mode . lsp)
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration)
-	 (lsp-completion-mode . my/lsp-mode-setup-completion)
-	 )
+		 (lsp-completion-mode . my/lsp-mode-setup-completion))
   :commands lsp)
 
 (use-package lsp-ui
