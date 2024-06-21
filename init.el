@@ -27,7 +27,17 @@
 (require 'recentf)
 (recentf-mode 1)
 (setq-default tab-width 4)
-(setq-default indent-tabs-mode nil)
+;;(setq-default indent-tabs-mode nil)
+
+(when (>= emacs-major-version 26)
+  ;; real auto save
+  (auto-save-visited-mode 1)
+  (setq auto-save-visited-interval 30))
+
+(setq backup-directory-alist '(("." . "~/.emacs.d/backup")))
+
+;; make typing delete/overwrites selected text
+(delete-selection-mode 1)
 
 ;; dired
 (setq dired-dwim-target t)
