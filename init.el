@@ -112,7 +112,7 @@
 ;; shell config
 (use-package shell-pop
   :ensure t
-  :bind ("C-t" . shell-pop)
+  :bind ("C-`" . shell-pop)
   :custom
   (shell-pop-shell-type '("eshell" "*eshell*" (lambda () (eshell))))
   (cond
@@ -120,7 +120,7 @@
     (shell-pop-term-shell "/bin/zsh"))
    (t
     (shell-pop-term-shell "/bin/bash")))
-  (shell-pop-universal-key "C-t")
+  (shell-pop-universal-key "C-`")
   (shell-pop-window-size 30)
   (shell-pop-full-span t)
   (shell-pop-window-position "bottom"))
@@ -293,11 +293,31 @@
 ;;   ;; commands other than xref-find-definitions (e.g. project-find-regexp)
 ;;   ;; as well
 ;;   (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))
+;; there's warning in the startup, disable it now
+;; (use-package smartparens-mode
+;;   :ensure smartparens  ;; install the package
+;;   :hook (prog-mode text-mode markdown-mode) ;; add `smartparens-mode` to these hooks
+;;   :config
+;;   ;; load default config
+;;   (require 'smartparens-config))
 
 (use-package flycheck
   :ensure t
   :config
+  (flycheck-add-mode 'typescript-tslint 'web-mode)
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
   (add-hook 'after-init-hook #'global-flycheck-mode))
+
+;; treesit is major mode now, web-mode is major mode now as well.
+;; use web-mode for react dev now. heard that there will be minor feature for treesit
+;; will enable the minor mode then.
+;; (use-package treesit-auto
+;;   :ensure t
+;;   :custom
+;;   (treesit-auto-install 'prompt)
+;;   :config
+;;   (treesit-auto-add-to-auto-mode-alist 'all)
+;;   (global-treesit-auto-mode))
 
 (use-package lsp-mode
   :ensure t
@@ -318,6 +338,10 @@
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
          (c-mode . lsp)
 		 (c++-mode . lsp)
+		 (js-ts-mode . lsp)
+         (js2-mode . lsp)
+         (web-mode . lsp)
+         (typescript-mode . lsp)
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration)
 		 (lsp-completion-mode . my/lsp-mode-setup-completion))
@@ -334,6 +358,20 @@
   (lsp-ui-sideline-delay 0.5)
   (lsp-ui-sideline-ignore-duplicate t)
   :hook (lsp-mode . lsp-ui-mode))
+
+(use-package treemacs
+  :ensure t
+  :defer t
+  :init
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  :config
+  (setq treemacs-width 30
+        treemacs-position 'left) ; Opens on the left side
+  (treemacs-follow-mode t)
+  (treemacs-filewatch-mode t)
+  (treemacs-git-mode 'deferred)
+  (treemacs-hide-gitignored-files-mode nil))
 
 (use-package lsp-treemacs
   :ensure t
@@ -362,6 +400,44 @@
   (setq dap-auto-configure-features '(sessions locals breakpoints expressions repl controls tooltip))
   (add-hook 'dap-stopped-hook
             (lambda (arg) (call-interactively #'dap-hydra))))
+
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)))
+
+(use-package web-mode
+  :mode (("\\.html\\'" . web-mode)
+         ("\\.css\\'" . web-mode)
+         ("\\.js\\'" . web-mode)
+         ("\\.jsx\\'" . web-mode)
+         ("\\.ts\\'" . web-mode)
+         ("\\.tsx\\'" . web-mode))
+  :config
+  (setq web-mode-enable-auto-quoting nil)
+  (setq web-mode-content-types-alist
+        '(("jsx" . "\\.js[x]?\\'")
+          ("tsx" . "\\.ts[x]?\\'"))))
+
+;; (use-package js2-mode
+;;   :ensure t
+;;   :mode "\\.js\\'"
+;;   :config
+;;   (setq js2-basic-offset 2))
+
+;; (use-package typescript-mode
+;;   :ensure t
+;;   :mode "\\.ts\\'"
+;;   :config
+;;   (setq typescript-indent-level 2))
+
+(use-package prettier-js
+  :ensure t
+  :hook ((js-ts-mode . prettier-js-mode)
+         (js2-mode . prettier-js-mode)
+         (web-mode . prettier-js-mode)
+         (typescript-ts-mode . prettier-js-mode)))
 
 (use-package wgrep
   :ensure t

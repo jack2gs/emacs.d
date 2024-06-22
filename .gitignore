@@ -53,3 +53,5 @@ projectile-bookmarks.eld
 .cache/
 .lsp-session-v1
 eln-cache/
+.dap-breakpoints
+tree-sitter/
