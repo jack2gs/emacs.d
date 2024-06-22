@@ -408,6 +408,7 @@
     (exec-path-from-shell-initialize)))
 
 (use-package web-mode
+  :ensure t
   :mode (("\\.html\\'" . web-mode)
          ("\\.css\\'" . web-mode)
          ("\\.js\\'" . web-mode)
