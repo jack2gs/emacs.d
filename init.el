@@ -28,6 +28,9 @@
 (recentf-mode 1)
 (setq-default tab-width 4)
 ;;(setq-default indent-tabs-mode nil)
+(when (eq system-type 'darwin)
+  (setq ns-use-native-fullscreen nil)
+  (setq ns-pop-up-frames nil))
 
 (when (>= emacs-major-version 26)
   ;; real auto save
@@ -41,6 +44,15 @@
 
 ;; dired
 (setq dired-dwim-target t)
+
+(set-face-attribute 'default nil :height 160) ; 160 is equivalent to 12pt font size
+
+;; start the initial frame maximized
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+
+;; start every frame maximized
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
 
 ;; mark and region
 (use-package expand-region
