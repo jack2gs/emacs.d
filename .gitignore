@@ -55,3 +55,7 @@ projectile-bookmarks.eld
 eln-cache/
 .dap-breakpoints
 tree-sitter/
+
+.mc-lists.el
+dape-breakpoints
+projects

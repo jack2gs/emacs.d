@@ -14,7 +14,6 @@
 
 ;; Configure use-package
 (require 'use-package)
-
 (use-package dired
   :ensure nil
   :config
@@ -26,11 +25,18 @@
 ;; keep a list of recently opened files
 (require 'recentf)
 (recentf-mode 1)
-(setq-default tab-width 4)
 ;;(setq-default indent-tabs-mode nil)
 (when (eq system-type 'darwin)
   (setq ns-use-native-fullscreen nil)
   (setq ns-pop-up-frames nil))
+
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (setq typescript-ts-mode-indent-offset 4)
+            (setq treesit-font-lock-level 4)
+            (setq indent-tabs-mode nil)
+            (setq tab-width 4)
+            (eglot-ensure)))
 
 (when (>= emacs-major-version 26)
   ;; real auto save
@@ -53,14 +59,12 @@
 ;; start every frame maximized
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-
 ;; mark and region
 (use-package expand-region
   :ensure t
   :config
-  (setq expand-region-contract-fast-key "C--")    ;; Set the key for contracting fast
-  (setq expand-region-reset-fast-key "C-M-=")     ;; Set the key for resetting the selection
-  :bind ("C-=" . er/expand-region))
+  (setq expand-region-contract-fast-key "-")    ;; Set the key for contracting fast
+  (setq expand-region-reset-fast-key "C-M-="))     ;; Set the key for resetting the selection
 
 (defun marker-is-point-p (marker)
   "test if marker is current point"
@@ -92,16 +96,6 @@
   (call-interactively 'pop-global-mark)
   (setq global-mark-ring (nreverse global-mark-ring)))
 
-;; Terminal specific key bindings
-(unless (display-graphic-p)
-  (global-set-key (kbd "ESC <left>") 'backward-global-mark)
-  (global-set-key (kbd "ESC <right>") 'forward-global-mark))
-
-;; GUI specific key bindings
-(when (display-graphic-p)
-  (global-set-key (kbd "M-<left>") 'backward-global-mark)
-  (global-set-key (kbd "M-<right>") 'forward-global-mark))
-
 (use-package visible-mark
   :ensure t
   :config
@@ -119,7 +113,6 @@
          ("C->" . mc/mark-next-like-this)
          ("C-<" . mc/mark-previous-like-this)
          ("C-*" . mc/mark-all-like-this)))
-
 
 ;; shell config
 (use-package shell-pop
@@ -267,10 +260,6 @@
          ("C-c p g" . consult-projectile-ripgrep)
          ("C-c p b" . consult-projectile-switch-to-buffer)))
 
-;; Enable consult-imenu with lsp-mode
-(with-eval-after-load 'lsp-mode
-  (define-key lsp-mode-map (kbd "M-i") 'consult-imenu))
-
 (use-package zenburn-theme
   :ensure t
   :config
@@ -294,83 +283,6 @@
   (bind-key "M-g )"  'avy-goto-close-paren)
   (bind-key "M-g P"  'avy-pop-mark))
 
-;; (use-package ivy-xref
-;;   :ensure t
-;;   :init
-;;   ;; xref initialization is different in Emacs 27 - there are two different
-;;   ;; variables which can be set rather than just one
-;;   (when (>= emacs-major-version 27)
-;;     (setq xref-show-definitions-function #'ivy-xref-show-defs))
-;;   ;; Necessary in Emacs <27. In Emacs 27 it will affect all xref-based
-;;   ;; commands other than xref-find-definitions (e.g. project-find-regexp)
-;;   ;; as well
-;;   (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))
-;; there's warning in the startup, disable it now
-;; (use-package smartparens-mode
-;;   :ensure smartparens  ;; install the package
-;;   :hook (prog-mode text-mode markdown-mode) ;; add `smartparens-mode` to these hooks
-;;   :config
-;;   ;; load default config
-;;   (require 'smartparens-config))
-
-(use-package flycheck
-  :ensure t
-  :config
-  (flycheck-add-mode 'typescript-tslint 'web-mode)
-  (flycheck-add-mode 'javascript-eslint 'web-mode)
-  (add-hook 'after-init-hook #'global-flycheck-mode))
-
-;; treesit is major mode now, web-mode is major mode now as well.
-;; use web-mode for react dev now. heard that there will be minor feature for treesit
-;; will enable the minor mode then.
-;; (use-package treesit-auto
-;;   :ensure t
-;;   :custom
-;;   (treesit-auto-install 'prompt)
-;;   :config
-;;   (treesit-auto-add-to-auto-mode-alist 'all)
-;;   (global-treesit-auto-mode))
-
-(use-package lsp-mode
-  :ensure t
-  :init
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-  (setq lsp-keymap-prefix "C-c l")
-  (defun my/lsp-mode-setup-completion ()
-    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-          '(orderless))) ;; Configure flex
-  :custom
-   (lsp-completion-provider :none)
-  :config
-  (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error" "--compile-commands-dir=./build"))
-  ;; Ensure imenu is refreshed when lsp updates
-  ;;(add-hook 'lsp-after-open-hook #'lsp-enable-imenu)
-  ;;(add-hook 'lsp-after-diagnostics-hook #'imenu-list-update)
-  ;;(add-hook 'lsp-on-idle-hook #'imenu-list-update)
-  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-         (c-mode . lsp)
-		 (c++-mode . lsp)
-		 (js-ts-mode . lsp)
-         (js2-mode . lsp)
-         (web-mode . lsp)
-         (typescript-mode . lsp)
-         ;; if you want which-key integration
-         (lsp-mode . lsp-enable-which-key-integration)
-		 (lsp-completion-mode . my/lsp-mode-setup-completion))
-  :commands lsp)
-
-(use-package lsp-ui
-  :ensure t
-  :after lsp-mode
-  :custom
-  (lsp-ui-sideline-enable t)
-  (lsp-ui-sideline-show-hover t)
-  (lsp-ui-sideline-show-code-actions t)
-  (lsp-ui-sideline-show-diagnostics t)
-  (lsp-ui-sideline-delay 0.5)
-  (lsp-ui-sideline-ignore-duplicate t)
-  :hook (lsp-mode . lsp-ui-mode))
-
 (use-package treemacs
   :ensure t
   :defer t
@@ -385,72 +297,37 @@
   (treemacs-git-mode 'deferred)
   (treemacs-hide-gitignored-files-mode nil))
 
-(use-package lsp-treemacs
-  :ensure t
-  :commands lsp-treemacs-errors-list)
-
-;; optionally if you want to use debugger
-(use-package dap-mode
-  :ensure t
-  :config
-  ;; Set up DAP for LLDB
-  (require 'dap-lldb)
-  (dap-mode 1)
-  (dap-ui-mode 1)
-  (dap-tooltip-mode 1)
-  (tooltip-mode 1)
-  (dap-ui-controls-mode 1)
-  ;; Configure the debugger executable path
-  (cond
-   ((eq system-type 'darwin)
-    (setq dap-lldb-debug-program '("/opt/homebrew/bin/lldb-vscode")))
-   (t
-    (setq dap-lldb-debug-program '("/usr/bin/lldb-vscode"))))
-  (setq dap-lldb-debugged-program-function (lambda () (read-file-name "Select file to debug.")))
-
-  ;; Additional DAP configurations
-  (setq dap-auto-configure-features '(sessions locals breakpoints expressions repl controls tooltip))
-  (add-hook 'dap-stopped-hook
-            (lambda (arg) (call-interactively #'dap-hydra))))
-
 (use-package exec-path-from-shell
   :ensure t
   :config
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
 
-(use-package web-mode
-  :ensure t
-  :mode (("\\.html\\'" . web-mode)
-         ("\\.css\\'" . web-mode)
-         ("\\.js\\'" . web-mode)
-         ("\\.jsx\\'" . web-mode)
-         ("\\.ts\\'" . web-mode)
-         ("\\.tsx\\'" . web-mode))
-  :config
-  (setq web-mode-enable-auto-quoting nil)
-  (setq web-mode-content-types-alist
-        '(("jsx" . "\\.js[x]?\\'")
-          ("tsx" . "\\.ts[x]?\\'"))))
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . tsx-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
 
-;; (use-package js2-mode
-;;   :ensure t
-;;   :mode "\\.js\\'"
-;;   :config
-;;   (setq js2-basic-offset 2))
+(defun my-c-c++-header-mode ()
+  "Set either `c-mode` or `c++-mode` depending on the content of the header."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (if (re-search-forward "^\s*#\s*if\\(n\\|\\)def\\|class\\|namespace\\|template\\|public:" nil t)
+        (c++-mode)
+      (c-mode))))
 
-;; (use-package typescript-mode
-;;   :ensure t
-;;   :mode "\\.ts\\'"
-;;   :config
-;;   (setq typescript-indent-level 2))
+(add-to-list 'auto-mode-alist '("\\.h\\'" . my-c-c++-header-mode))
+(dolist (mapping '(("\\.ts\\'" . tsx-ts-mode)
+				   ("\\.tsx\\'" . tsx-ts-mode)
+				   ("\\.js\\'" . tsx-ts-mode)
+				   ("\\.jsx\\'" . tsx-ts-mode)
+				   ("CMakeLists\\.txt\\'" . cmake-ts-mode)
+				   ("\\.cmake\\'" . cmake-ts-mode)))
+  (add-to-list 'major-mode-remap-alist mapping))
 
-(use-package prettier-js
-  :ensure t
-  :hook ((js-ts-mode . prettier-js-mode)
-         (js2-mode . prettier-js-mode)
-         (web-mode . prettier-js-mode)
-         (typescript-ts-mode . prettier-js-mode)))
+(dolist (mapping '((c-mode . c-ts-mode)
+                   (c++-mode . c++-ts-mode)
+                   (css-mode . css-ts-mode)))
+  (add-to-list 'major-mode-remap-alist mapping))
 
 (use-package wgrep
   :ensure t
@@ -493,6 +370,159 @@
 (use-package treemacs-icons-dired
   :hook (dired-mode . treemacs-icons-dired-enable-once)
   :ensure t)
+
+(use-package dape
+  :ensure t
+  :preface
+  ;; By default dape shares the same keybinding prefix as `gud'
+  ;; If you do not want to use any prefix, set it to nil.
+  ;; (setq dape-key-prefix "\C-x\C-a")
+  :hook
+  ;; Save breakpoints on quit
+  ((kill-emacs . dape-breakpoint-save)
+  ;; Load breakpoints on startup
+  (after-init . dape-breakpoint-load))
+  :init
+  ;; To use window configuration like gud (gdb-mi)
+  ;; (setq dape-buffer-window-arrangement 'gud)
+  (setq dape-info-hide-mode-line nil)
+  :config
+  ;; Info buffers to the right
+  ;; (setq dape-buffer-window-arrangement 'right)
+
+  ;; Global bindings for setting breakpoints with mouse
+  ;; (dape-breakpoint-global-mode)
+
+  ;; Pulse source line (performance hit)
+  ;; (add-hook 'dape-display-source-hook 'pulse-momentary-highlight-one-line)
+
+  ;; To not display info and/or buffers on startup
+  ;; (remove-hook 'dape-start-hook 'dape-info)
+  ;; (remove-hook 'dape-start-hook 'dape-repl)
+
+  ;; To display info and/or repl buffers on stopped
+  ;; (add-hook 'dape-stopped-hook 'dape-info)
+  ;; (add-hook 'dape-stopped-hook 'dape-repl)
+
+  ;; Kill compile buffer on build success
+  ;; (add-hook 'dape-compile-hook 'kill-buffer)
+
+  ;; Save buffers on startup, useful for interpreted languages
+  ;; (add-hook 'dape-start-hook (lambda () (save-some-buffers t t)))
+
+  ;; Projectile users
+  ;; (setq dape-cwd-fn 'projectile-project-root)
+  )
+
+;; my key bindings
+;; (use-package general
+;;   :ensure t
+;;   :config
+;;   (general-define-key
+;;    "C-=" 'er/expand-region
+;;    "M-<left>" 'backward-global-mark
+;;    "M-<right>" 'forward-global-mark
+;;    )
+  ;; (general-create-definer my-global-leader-def
+  ;; 	:prefix "C-x")
+  ;; (general-create-definer my-leader-def
+  ;; 	:prefix "C-c")
+
+  ;; (my-leader-def
+  ;; 	:keymaps 'lsp-mode-map
+  ;; 	[remap xref-find-definitions] 'lsp-find-definitions
+  ;; 	[remap xref-find-references] 'lsp-find-references
+  ;; 	"xd" 'lsp-find-declaration
+  ;; 	"xx" 'lsp-find-definition
+  ;; 	"xi" 'lsp-find-implementation
+  ;; 	"xr" 'lsp-find-references
+  ;; 	"xl" 'lsp-find-locations
+  ;; 	"xw" 'lsp-find-workspace
+  ;; 	"xs" 'lsp-find-session-folder
+  ;; 	"gl" 'lsp-goto-location
+  ;; 	"gg" 'lsp-goto-type-definition
+  ;; 	"gi" 'lsp-goto-implementation)
+  ;; (my-leader-def
+  ;; 	:keymaps 'lsp-ui-mode-map
+  ;;   "Xd" 'lsp-ui-peek-find-definitions
+  ;; 	"Xr" 'lsp-ui-peek-find-references
+  ;; 	"Xi" 'lsp-ui-peek-find-implementation
+  ;; 	"Xs" 'lsp-ui-peek-find-workspace-symbol
+  ;; 	"Ii" 'lsp-ui-imenu)
+  ;; (my-leader-def
+  ;; 	"tr" 'lsp-treemacs-references
+  ;; 	"ti" 'lsp-treemacs-implementations
+  ;; 	"ts" 'lsp-treemacs-symbols
+  ;; 	"te" 'lsp-treemacs-errors-list
+  ;; 	"tc" 'lsp-treemacs-call-hierarchy
+  ;; 	"th" 'lsp-treemacs-type-hierarchy)
+  ;; (general-define-key
+  ;;  :keymaps 'override
+  ;;  :prefix-map 'my-leader-map
+  ;;  :prefix "C-t"
+  ;;  "f" '(:prefix-command my-file-command :which-key "files")
+  ;;  )
+
+  ;; (general-create-definer my-file-def
+  ;; 	:prefix-map 'my-file-map
+  ;; 	:prefix-command 'my-file-command)
+
+  ;; (my-file-def
+  ;; 	"f" 'consult-find
+  ;; 	"l" 'consult-line)
+  ;; (general-define-key
+  ;;  ;;:keymaps 'override
+  ;;  :prefix "C-c"
+  ;;  :prefix-map 'my-main-map)
+
+  ;; (general-create-definer my-main-def
+  ;; 	:keymaps 'my-main-map)
+
+  ;; (my-main-def
+  ;; 	"f" '(:prefix-command my-file-command :wk "files")
+  ;; 	"v" '(:prefix-command my-view-command :wk "views"))
+
+  ;; (general-create-definer my-file-def
+  ;; 	:keymaps 'my-main-map
+  ;; 	:prefix "f"
+  ;; 	:prefix-command 'my-file-command)
+
+  ;; (my-file-def
+  ;;  "f" 'consult-file
+  ;;  "d" 'dired)
+
+
+  ;; (general-create-definer my-view-def
+  ;; 	:keymaps 'my-main-map
+  ;; 	:prefix "v"
+  ;; 	:prefix-command 'my-view-command)
+
+
+  ;;  (my-view-def
+  ;; 	:keymaps 'lsp-ui-mode-map
+  ;;    "xd" 'lsp-ui-peek-find-definitions
+  ;; 	 "xr" 'lsp-ui-peek-find-references
+  ;; 	 "xi" 'lsp-ui-peek-find-implementation
+  ;;  	 "xs" 'lsp-ui-peek-find-workspace-symbol
+  ;;  	 "i" 'lsp-ui-imenu)
+  
+  ;; ;; (general-create-definer my-leader-def
+  ;; ;; 			  :keymaps 'override
+  ;; ;; 			  :prefix-map my-leader-map
+  ;; ;;   :prefix "C-t")
+
+  ;; ;; ;; Define the nested file-related keymap under `C-t f`
+  ;; ;; (my-leader-def
+  ;; ;;   "f" '(:prefix-command my-file-command :which-key "files")
+  ;; ;; 	"T" 'consult-line)
+
+  ;; ;; ;; Define the file-related keymap and its commands
+  ;; ;; (general-define-key
+  ;; ;;  :prefix ""
+  ;; ;;  :prefix-command 'my-file-command
+  ;; ;;  "f" 'consult-find
+  ;; ;;  "s" 'consult-line))
+  ;; )
 
 ;; Set custom file
 (setq custom-file (expand-file-name "custom-vars.el" user-emacs-directory))
