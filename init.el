@@ -326,6 +326,7 @@
 
 (dolist (mapping '((c-mode . c-ts-mode)
                    (c++-mode . c++-ts-mode)
+                   (csharp-mode . csharp-ts-mode)
                    (css-mode . css-ts-mode)))
   (add-to-list 'major-mode-remap-alist mapping))
 
