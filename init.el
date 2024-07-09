@@ -20,6 +20,9 @@
   (when (string-equal system-type "darwin")
     (setq dired-use-ls-dired nil)))
 
+
+(if (display-graphic-p) (tool-bar-mode -1))
+
 ;; common
 (setq use-short-answers t)
 ;; keep a list of recently opened files
