@@ -105,10 +105,9 @@
   ;; Enable visible-mark-mode globally
   (global-visible-mark-mode 1)
   ;; Set the number of marks to highlight
-  (setq visible-mark-max 2)
+  (setq visible-mark-max 100)
   ;; Set the faces for the marks
   (setq visible-mark-faces '(visible-mark-face1 visible-mark-face2)))
-
 
 (use-package multiple-cursors
   :ensure t
@@ -136,7 +135,7 @@
 (prefer-coding-system 'utf-8)
 
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-(setq display-line-numbers-type 'relative) ; Use 'relative for absolute line numbers
+;;(setq display-line-numbers-type 'relative) ; Use 'relative for absolute line numbers
 
 (use-package vertico
   :ensure t
@@ -160,13 +159,6 @@
   :ensure t
   :init
   (marginalia-mode))
-
-;; Ensure project is loaded
-(require 'project)
-
-;; Define a project-roots method for projectile projects
-(cl-defmethod project-roots ((project (head projectile)))
-  (list (cdr project)))
 
 (use-package consult
   :ensure t
@@ -255,13 +247,6 @@
   ;;(kind-icon-use-icons nil)
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
-
-(use-package consult-projectile
-  :ensure t
-  :after (consult projectile)
-  :bind (("C-c p f" . consult-projectile-find-file)
-         ("C-c p g" . consult-projectile-ripgrep)
-         ("C-c p b" . consult-projectile-switch-to-buffer)))
 
 (use-package zenburn-theme
   :ensure t
@@ -356,25 +341,6 @@
   :config
   (winum-mode))
 
-;;; treemacs and projectile
-(use-package projectile
-  :ensure t
-  :demand t
-  :init
-  (setq projectile-completion-system 'default)
-  :bind (:map projectile-mode-map
-	      ("C-c p" . 'projectile-command-map))
-  :config
-  (projectile-mode))
-
-(use-package treemacs-projectile
-  :after (treemacs projectile)
-  :ensure t)
-
-(use-package treemacs-icons-dired
-  :hook (dired-mode . treemacs-icons-dired-enable-once)
-  :ensure t)
-
 (use-package dape
   :ensure t
   :preface
@@ -413,9 +379,6 @@
 
   ;; Save buffers on startup, useful for interpreted languages
   ;; (add-hook 'dape-start-hook (lambda () (save-some-buffers t t)))
-
-  ;; Projectile users
-  ;; (setq dape-cwd-fn 'projectile-project-root)
   )
 
 ;; my key bindings
