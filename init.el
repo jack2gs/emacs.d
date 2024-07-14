@@ -28,7 +28,6 @@
 ;; keep a list of recently opened files
 (require 'recentf)
 (recentf-mode 1)
-;;(setq-default indent-tabs-mode nil)
 (when (eq system-type 'darwin)
   (setq ns-use-native-fullscreen nil)
   (setq ns-pop-up-frames nil))
@@ -39,6 +38,9 @@
             (setq treesit-font-lock-level 4)
             (setq indent-tabs-mode nil)
             (setq tab-width 4)
+            (which-function-mode 1)
+            (show-paren-mode 1)
+            (electric-pair-mode 1)
             (eglot-ensure)))
 
 (when (>= emacs-major-version 26)
