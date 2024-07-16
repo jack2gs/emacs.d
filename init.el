@@ -14,6 +14,11 @@
 
 ;; Configure use-package
 (require 'use-package)
+
+(use-package general
+  :ensure t
+  )
+
 (use-package dired
   :ensure nil
   :config
@@ -66,10 +71,7 @@
 
 ;; mark and region
 (use-package expand-region
-  :ensure t
-  :config
-  (setq expand-region-contract-fast-key "-")    ;; Set the key for contracting fast
-  (setq expand-region-reset-fast-key "C-M-="))     ;; Set the key for resetting the selection
+  :ensure t)
 
 (defun marker-is-point-p (marker)
   "test if marker is current point"
@@ -113,15 +115,15 @@
 
 (use-package multiple-cursors
   :ensure t
-  :bind (("C-S-c C-S-c" . mc/edit-lines)
-         ("C->" . mc/mark-next-like-this)
-         ("C-<" . mc/mark-previous-like-this)
-         ("C-*" . mc/mark-all-like-this)))
+  ;; :bind (("C-S-c C-S-c" . mc/edit-lines)
+  ;;        ("C->" . mc/mark-next-like-this)
+  ;;        ("C-<" . mc/mark-previous-like-this)
+  ;;        ("C-*" . mc/mark-all-like-this))
+  )
 
 ;; shell config
 (use-package shell-pop
   :ensure t
-  :bind ("C-`" . shell-pop)
   :custom
   (shell-pop-shell-type '("eshell" "*eshell*" (lambda () (eshell))))
   (cond
@@ -129,7 +131,6 @@
     (shell-pop-term-shell "/bin/zsh"))
    (t
     (shell-pop-term-shell "/bin/bash")))
-  (shell-pop-universal-key "C-`")
   (shell-pop-window-size 30)
   (shell-pop-full-span t)
   (shell-pop-window-position "bottom"))
@@ -137,7 +138,6 @@
 (prefer-coding-system 'utf-8)
 
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-;;(setq display-line-numbers-type 'relative) ; Use 'relative for absolute line numbers
 
 (use-package vertico
   :ensure t
@@ -164,36 +164,12 @@
 
 (use-package consult
   :ensure t
-  :bind (("C-s" . consult-line)
-         ("M-y" . consult-yank-pop)
-         ("C-x b" . consult-buffer)
-         ("C-c h" . consult-imenu)
-         ("C-c k" . consult-ripgrep)
-         ("C-c l" . consult-locate)
-         ("C-c m" . consult-mark)
-         ("C-c b" . consult-bookmark)
-         ("C-x r b" . consult-register)
-         ("M-g g" . consult-goto-line)
-         ("M-g M-g" . consult-goto-line)
-         ("M-g o" . consult-outline)
-         ("M-g m" . consult-mark)
-         ("M-g k" . consult-global-mark)
-         ("M-g e" . consult-compile-error)
-         ("M-g f" . consult-flymake)
-         ("M-s l" . consult-line)
-         ("M-s g" . consult-grep)
-         ("M-s r" . consult-ripgrep)
-         ("M-s f" . consult-find)
-         ("M-s F" . consult-locate)
-         ("M-s m" . consult-man)
-         ("M-s k" . consult-keep-lines)
-         ("M-s u" . consult-focus-lines))
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :init
   (setq register-preview-delay 0.5
         register-preview-function #'consult-register-format)
   (advice-add #'register-preview :override #'consult-register-window)
-  (setq consult-narrow-key "<")
+  ;; (setq consult-narrow-key "<")
   ;; Use consult-project-root for project root detection
   (setq consult-project-root-function
         (lambda ()
@@ -202,10 +178,6 @@
 
 (use-package embark
   :ensure t
-  :bind
-  (("C-." . embark-act)
-   ("C-;" . embark-dwim)
-   ("C-h B" . embark-bindings))
   :init
   (setq prefix-help-command #'embark-prefix-help-command)
   :config
@@ -259,26 +231,41 @@
   :ensure t
   :if (display-graphic-p))
 
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook)
+  ;; for further config look at:
+  ;; https://github.com/emacs-dashboard/emacs-dashboard
+  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*"))
+        dashboard-banner-logo-title "Welcome back!"
+        dashboard-startup-banner 'logo
+        dashboard-center-content t
+        dashboard-set-navigator t
+        dashboard-items '((recents   . 5)
+                        (bookmarks . 5)
+                        (projects  . 5)
+                        (agenda    . 5)
+                        (registers . 5))
+        dashboard-startupify-list '(dashboard-insert-banner
+                                  dashboard-insert-newline
+                                  dashboard-insert-banner-title
+                                  dashboard-insert-newline
+                                  dashboard-insert-navigator
+                                  dashboard-insert-newline
+                                  dashboard-insert-init-info
+                                  dashboard-insert-items
+                                  dashboard-insert-newline)
+        dashboard-icon-type 'all-the-icons))  ; use `all-the-icons' package
+
 (use-package avy
   :ensure t
   :init
-  (setq avy-case-fold-search nil)       ;; case sensitive makes selection easier
-  (bind-key "C-;"    'avy-goto-char-2)  ;; I use this most frequently
-  (bind-key "C-'"    'avy-goto-line)    ;; Consistent with ivy-avy
-  (bind-key "M-g c"  'avy-goto-char)
-  (bind-key "M-g e"  'avy-goto-word-0)  ;; lots of candidates
-  (bind-key "M-g g"  'avy-goto-line)    ;; digits behave like goto-line
-  (bind-key "M-g w"  'avy-goto-word-1)  ;; first character of the word
-  (bind-key "M-g ("  'avy-goto-open-paren)
-  (bind-key "M-g )"  'avy-goto-close-paren)
-  (bind-key "M-g P"  'avy-pop-mark))
+  (setq avy-case-fold-search nil))
 
 (use-package treemacs
   :ensure t
   :defer t
-  :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
   :config
   (setq treemacs-width 30
         treemacs-position 'left) ; Opens on the left side
@@ -321,11 +308,7 @@
   (add-to-list 'major-mode-remap-alist mapping))
 
 (use-package wgrep
-  :ensure t
-  :bind ( :map grep-mode-map
-          ("e" . wgrep-change-to-wgrep-mode)
-          ("C-x C-q" . wgrep-change-to-wgrep-mode)
-          ("C-c C-c" . wgrep-finish-edit)))
+  :ensure t)
 
 (use-package wgrep-ag
   :ensure t)
@@ -334,8 +317,7 @@
 (use-package which-key
   :ensure t
   :config
-  (which-key-mode)
-  )
+  (which-key-mode))
 
 ;;; window management
 (use-package winum
@@ -383,115 +365,47 @@
   ;; (add-hook 'dape-start-hook (lambda () (save-some-buffers t t)))
   )
 
-;; my key bindings
-;; (use-package general
-;;   :ensure t
-;;   :config
-;;   (general-define-key
-;;    "C-=" 'er/expand-region
-;;    "M-<left>" 'backward-global-mark
-;;    "M-<right>" 'forward-global-mark
-;;    )
-  ;; (general-create-definer my-global-leader-def
-  ;; 	:prefix "C-x")
-  ;; (general-create-definer my-leader-def
-  ;; 	:prefix "C-c")
-
-  ;; (my-leader-def
-  ;; 	:keymaps 'lsp-mode-map
-  ;; 	[remap xref-find-definitions] 'lsp-find-definitions
-  ;; 	[remap xref-find-references] 'lsp-find-references
-  ;; 	"xd" 'lsp-find-declaration
-  ;; 	"xx" 'lsp-find-definition
-  ;; 	"xi" 'lsp-find-implementation
-  ;; 	"xr" 'lsp-find-references
-  ;; 	"xl" 'lsp-find-locations
-  ;; 	"xw" 'lsp-find-workspace
-  ;; 	"xs" 'lsp-find-session-folder
-  ;; 	"gl" 'lsp-goto-location
-  ;; 	"gg" 'lsp-goto-type-definition
-  ;; 	"gi" 'lsp-goto-implementation)
-  ;; (my-leader-def
-  ;; 	:keymaps 'lsp-ui-mode-map
-  ;;   "Xd" 'lsp-ui-peek-find-definitions
-  ;; 	"Xr" 'lsp-ui-peek-find-references
-  ;; 	"Xi" 'lsp-ui-peek-find-implementation
-  ;; 	"Xs" 'lsp-ui-peek-find-workspace-symbol
-  ;; 	"Ii" 'lsp-ui-imenu)
-  ;; (my-leader-def
-  ;; 	"tr" 'lsp-treemacs-references
-  ;; 	"ti" 'lsp-treemacs-implementations
-  ;; 	"ts" 'lsp-treemacs-symbols
-  ;; 	"te" 'lsp-treemacs-errors-list
-  ;; 	"tc" 'lsp-treemacs-call-hierarchy
-  ;; 	"th" 'lsp-treemacs-type-hierarchy)
-  ;; (general-define-key
-  ;;  :keymaps 'override
-  ;;  :prefix-map 'my-leader-map
-  ;;  :prefix "C-t"
-  ;;  "f" '(:prefix-command my-file-command :which-key "files")
-  ;;  )
-
-  ;; (general-create-definer my-file-def
-  ;; 	:prefix-map 'my-file-map
-  ;; 	:prefix-command 'my-file-command)
-
-  ;; (my-file-def
-  ;; 	"f" 'consult-find
-  ;; 	"l" 'consult-line)
-  ;; (general-define-key
-  ;;  ;;:keymaps 'override
-  ;;  :prefix "C-c"
-  ;;  :prefix-map 'my-main-map)
-
-  ;; (general-create-definer my-main-def
-  ;; 	:keymaps 'my-main-map)
-
-  ;; (my-main-def
-  ;; 	"f" '(:prefix-command my-file-command :wk "files")
-  ;; 	"v" '(:prefix-command my-view-command :wk "views"))
-
-  ;; (general-create-definer my-file-def
-  ;; 	:keymaps 'my-main-map
-  ;; 	:prefix "f"
-  ;; 	:prefix-command 'my-file-command)
-
-  ;; (my-file-def
-  ;;  "f" 'consult-file
-  ;;  "d" 'dired)
-
-
-  ;; (general-create-definer my-view-def
-  ;; 	:keymaps 'my-main-map
-  ;; 	:prefix "v"
-  ;; 	:prefix-command 'my-view-command)
-
-
-  ;;  (my-view-def
-  ;; 	:keymaps 'lsp-ui-mode-map
-  ;;    "xd" 'lsp-ui-peek-find-definitions
-  ;; 	 "xr" 'lsp-ui-peek-find-references
-  ;; 	 "xi" 'lsp-ui-peek-find-implementation
-  ;;  	 "xs" 'lsp-ui-peek-find-workspace-symbol
-  ;;  	 "i" 'lsp-ui-imenu)
-  
-  ;; ;; (general-create-definer my-leader-def
-  ;; ;; 			  :keymaps 'override
-  ;; ;; 			  :prefix-map my-leader-map
-  ;; ;;   :prefix "C-t")
-
-  ;; ;; ;; Define the nested file-related keymap under `C-t f`
-  ;; ;; (my-leader-def
-  ;; ;;   "f" '(:prefix-command my-file-command :which-key "files")
-  ;; ;; 	"T" 'consult-line)
-
-  ;; ;; ;; Define the file-related keymap and its commands
-  ;; ;; (general-define-key
-  ;; ;;  :prefix ""
-  ;; ;;  :prefix-command 'my-file-command
-  ;; ;;  "f" 'consult-find
-  ;; ;;  "s" 'consult-line))
-  ;; )
+(use-package general
+  :config
+  ;; global key bindings without prefix
+  ;; some key bindings may be related to minor modes
+  (general-define-key
+   "<f5>" 'dape
+   "<f6>" 'treemacs ; treemacs toggle
+   "<f12>" 'xref-find-definitions
+   "S-<f12>" 'xref-find-references
+   "C-M-=" 'er/expand-region
+   "M-<left>" 'backward-global-mark
+   "M-<right>" 'forward-global-mark
+   "C-`" 'shell-pop
+   "M-0" 'treemacs-select-window
+   "C-." 'embark-act
+   "C-;" 'embark-dwim
+   "C-h B" 'embark-bindings
+   [remap goto-char] 'avy-goto-char-timer
+   [remap isearch-forward] 'consult-line
+   [remap find-file] 'consult-find
+   [remap switch-to-buffer] 'consult-buffer
+   [remap project-switch-to-buffer] 'consult-project-buffer
+   [remap imenu] 'consult-imenu
+   [remap bookmark-jump] 'consult-bookmark
+   [remap go-to-line] 'consult-goto-line
+   [remap isearch-forward-regexp] 'consult-ripgrep
+   )
+  (general-define-key
+   :keymaps 'prog-mode-map
+   "<f9>" 'dape-breakpoint-toggle
+   "<f10>" 'dape-next
+   "<f11>" 'dape-step-in
+   "S-<f11>" 'dape-step-out
+   )
+  (general-define-key
+   :keymaps 'prog-mode-map
+   "C-<f12>" 'eglot-find-implementation
+   "C-M-<f12>" 'eglot-find-declaration)
+  ;; global key bindings with prefix
+  ;; some key bindings maybe related to minor modes
+  )
 
 ;; Set custom file
 (setq custom-file (expand-file-name "custom-vars.el" user-emacs-directory))
