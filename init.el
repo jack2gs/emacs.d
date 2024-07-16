@@ -409,6 +409,8 @@
 
 ;; Set custom file
 (setq custom-file (expand-file-name "custom-vars.el" user-emacs-directory))
+(unless (file-exists-p custom-file)
+  (with-temp-buffer (write-file custom-file)))
 (load custom-file)
 
 (provide 'init)
