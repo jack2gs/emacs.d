@@ -4,8 +4,8 @@
 ;;; Code:
 (setq package-archives '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
                          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-			 ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
-			 ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+			             ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
+			             ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
 (package-initialize)
 ;; Ensure use-package is installed
 (unless (package-installed-p 'use-package)
@@ -243,19 +243,19 @@
         dashboard-center-content t
         dashboard-set-navigator t
         dashboard-items '((recents   . 5)
-                        (bookmarks . 5)
-                        (projects  . 5)
-                        (agenda    . 5)
-                        (registers . 5))
+                          (bookmarks . 5)
+                          (projects  . 5)
+                          (agenda    . 5)
+                          (registers . 5))
         dashboard-startupify-list '(dashboard-insert-banner
-                                  dashboard-insert-newline
-                                  dashboard-insert-banner-title
-                                  dashboard-insert-newline
-                                  dashboard-insert-navigator
-                                  dashboard-insert-newline
-                                  dashboard-insert-init-info
-                                  dashboard-insert-items
-                                  dashboard-insert-newline)
+                                    dashboard-insert-newline
+                                    dashboard-insert-banner-title
+                                    dashboard-insert-newline
+                                    dashboard-insert-navigator
+                                    dashboard-insert-newline
+                                    dashboard-insert-init-info
+                                    dashboard-insert-items
+                                    dashboard-insert-newline)
         dashboard-icon-type 'all-the-icons))  ; use `all-the-icons' package
 
 (use-package avy
@@ -280,32 +280,35 @@
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
 
-(add-to-list 'auto-mode-alist '("\\.ts\\'" . tsx-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+(if (treesit-available-p)
+    (progn
+      (add-to-list 'auto-mode-alist '("\\.ts\\'" . tsx-ts-mode))
+      (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
 
-(defun my-c-c++-header-mode ()
-  "Set either `c-mode` or `c++-mode` depending on the content of the header."
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (if (re-search-forward "^\s*#\s*if\\(n\\|\\)def\\|class\\|namespace\\|template\\|public:" nil t)
-        (c++-mode)
-      (c-mode))))
+      (defun my-c-c++-header-mode ()
+        "Set either `c-mode` or `c++-mode` depending on the content of the header."
+        (interactive)
+        (save-excursion
+          (goto-char (point-min))
+          (if (re-search-forward "^\s*#\s*if\\(n\\|\\)def\\|class\\|namespace\\|template\\|public:" nil t)
+              (c++-mode)
+            (c-mode))))
 
-(add-to-list 'auto-mode-alist '("\\.h\\'" . my-c-c++-header-mode))
-(dolist (mapping '(("\\.ts\\'" . tsx-ts-mode)
-				   ("\\.tsx\\'" . tsx-ts-mode)
-				   ("\\.js\\'" . tsx-ts-mode)
-				   ("\\.jsx\\'" . tsx-ts-mode)
-				   ("CMakeLists\\.txt\\'" . cmake-ts-mode)
-				   ("\\.cmake\\'" . cmake-ts-mode)))
-  (add-to-list 'major-mode-remap-alist mapping))
+      (add-to-list 'auto-mode-alist '("\\.h\\'" . my-c-c++-header-mode))
+      (dolist (mapping '(("\\.ts\\'" . tsx-ts-mode)
+				         ("\\.tsx\\'" . tsx-ts-mode)
+				         ("\\.js\\'" . tsx-ts-mode)
+				         ("\\.jsx\\'" . tsx-ts-mode)
+				         ("CMakeLists\\.txt\\'" . cmake-ts-mode)
+				         ("\\.cmake\\'" . cmake-ts-mode)))
+        (add-to-list 'major-mode-remap-alist mapping))
 
-(dolist (mapping '((c-mode . c-ts-mode)
-                   (c++-mode . c++-ts-mode)
-                   (csharp-mode . csharp-ts-mode)
-                   (css-mode . css-ts-mode)))
-  (add-to-list 'major-mode-remap-alist mapping))
+      (dolist (mapping '((c-mode . c-ts-mode)
+                         (c++-mode . c++-ts-mode)
+                         (csharp-mode . csharp-ts-mode)
+                         (css-mode . css-ts-mode)))
+        (add-to-list 'major-mode-remap-alist mapping))
+      ))
 
 (use-package wgrep
   :ensure t)
@@ -334,8 +337,8 @@
   :hook
   ;; Save breakpoints on quit
   ((kill-emacs . dape-breakpoint-save)
-  ;; Load breakpoints on startup
-  (after-init . dape-breakpoint-load))
+   ;; Load breakpoints on startup
+   (after-init . dape-breakpoint-load))
   :init
   ;; To use window configuration like gud (gdb-mi)
   ;; (setq dape-buffer-window-arrangement 'gud)
