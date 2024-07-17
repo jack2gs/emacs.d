@@ -1,4 +1,4 @@
-
+.
 # Created by https://www.gitignore.io/api/macos,elisp
 
 ### Elisp ###
@@ -60,3 +60,4 @@ tree-sitter/
 dape-breakpoints
 projects
 custom-vars.el
+eshell

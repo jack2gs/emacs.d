@@ -386,7 +386,7 @@
    "C-*" 'mc/mark-all-like-this
    [remap goto-char] 'avy-goto-char-timer
    [remap isearch-forward] 'consult-line
-   [remap find-file] 'consult-find
+   ;;[remap find-file] 'consult-find
    [remap switch-to-buffer] 'consult-buffer
    [remap project-switch-to-buffer] 'consult-project-buffer
    [remap imenu] 'consult-imenu
