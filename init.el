@@ -114,12 +114,7 @@
   (setq visible-mark-faces '(visible-mark-face1 visible-mark-face2)))
 
 (use-package multiple-cursors
-  :ensure t
-  ;; :bind (("C-S-c C-S-c" . mc/edit-lines)
-  ;;        ("C->" . mc/mark-next-like-this)
-  ;;        ("C-<" . mc/mark-previous-like-this)
-  ;;        ("C-*" . mc/mark-all-like-this))
-  )
+  :ensure t)
 
 ;; shell config
 (use-package shell-pop
@@ -385,6 +380,10 @@
    "C-." 'embark-act
    "C-;" 'embark-dwim
    "C-h B" 'embark-bindings
+   "C-x r e" 'mc/edit-lines
+   "C->" 'mc/mark-next-like-this
+   "C-<" 'mc/mark-previous-like-this
+   "C-*" 'mc/mark-all-like-this
    [remap goto-char] 'avy-goto-char-timer
    [remap isearch-forward] 'consult-line
    [remap find-file] 'consult-find
@@ -393,8 +392,8 @@
    [remap imenu] 'consult-imenu
    [remap bookmark-jump] 'consult-bookmark
    [remap go-to-line] 'consult-goto-line
-   [remap isearch-forward-regexp] 'consult-ripgrep
-   )
+   [remap isearch-forward-regexp] 'consult-ripgrep)
+  
   (general-define-key
    :keymaps 'prog-mode-map
    "<f9>" 'dape-breakpoint-toggle
