@@ -186,26 +186,10 @@
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
-(use-package corfu
+(use-package company
   :ensure t
-  :custom
-  (corfu-cycle t)
-  (corfu-auto t)
-  (corfu-auto-prefix 2)
-  (corfu-quit-at-boundary nil)
-  (corfu-quit-no-match t)
-  (corfu-preview-current nil)
-  (corfu-preselect 'first)
-  :hook ((after-init . global-corfu-mode)
-         (global-corfu-mode . corfu-popupinfo-mode)))
-
-(use-package corfu-terminal
-  :unless window-system
-  :ensure t
-  :after corfu
-  :config
-  (corfu-terminal-mode)
-  )
+  :hook
+  (prog-mode . company-mode))
 
 ;; Optionally enable icons in Corfu
 (use-package kind-icon
