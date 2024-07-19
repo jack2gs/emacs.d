@@ -220,7 +220,18 @@
 (use-package zenburn-theme
   :ensure t
   :config
-  (load-theme 'zenburn t))
+  (load-theme 'zenburn t)
+  (zenburn-with-color-variables
+    (custom-theme-set-faces
+     'zenburn
+;;;;; hl-line-mode
+     `(hl-line-face ((t (:background ,zenburn-bg+1 ))))
+     `(hl-line ((t (:background ,zenburn-bg+1 ))))
+     )))
+
+(add-hook 'prog-mode-hook #'hl-line-mode)
+(add-hook 'text-mode-hook #'hl-line-mode)
+(add-hook 'dired-mode-hook #'hl-line-mode)
 
 (use-package all-the-icons
   :ensure t
