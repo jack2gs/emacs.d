@@ -32,7 +32,13 @@
   (setq custom-file (expand-file-name "custom-vars.el" user-emacs-directory))
   (unless (file-exists-p custom-file)
     (with-temp-buffer (write-file custom-file)))
-  (load custom-file))
+  (load custom-file)
+  (setq inhibit-warning-function
+        (lambda (type message)
+          (or (and (eq type 'deprecation)
+                   (string-match-p "events-buffer-scrollback-size" message))
+              (and (eq type 'deprecation)
+                   (string-match-p "events-buffer-config" message))))))
 
 (use-package dired
   :custom
@@ -385,7 +391,6 @@
   ;; global key bindings without prefix
   ;; some key bindings may be related to minor modes
   (general-define-key
-   "<f5>" 'dape
    "<f6>" 'treemacs ; treemacs toggle
    "<f12>" 'xref-find-definitions
    "S-<f12>" 'xref-find-references
@@ -413,18 +418,14 @@
   
   (general-define-key
    :keymaps 'prog-mode-map
+   "<f5>" 'dape
    "<f9>" 'dape-breakpoint-toggle
    "<f10>" 'dape-next
    "<f11>" 'dape-step-in
    "S-<f11>" 'dape-step-out
-   )
-  (general-define-key
-   :keymaps 'prog-mode-map
+   ;; lsp xref keybindings
    "C-<f12>" 'eglot-find-implementation
-   "C-M-<f12>" 'eglot-find-declaration)
-  ;; global key bindings with prefix
-  ;; some key bindings maybe related to minor modes
-  )
+   "C-M-<f12>" 'eglot-find-declaration))
 
 (provide 'init)
 ;;; init.el ends here
