@@ -6,68 +6,70 @@
                          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
 			             ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
 			             ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
-(package-initialize)
-;; Ensure use-package is installed
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
 
-;; Configure use-package
-(require 'use-package)
-
-(use-package general
-  :ensure t
-  )
+;; common
+(use-package emacs
+  :custom
+  (use-short-answers t)
+  :config
+  (set-face-attribute 'default nil :height 160) ; 160 is equivalent to 12pt font size
+  (if (display-graphic-p) (tool-bar-mode -1))
+  (when (eq system-type 'darwin)
+    (setq ns-use-native-fullscreen nil)
+    (setq ns-pop-up-frames nil))
+  ;; real auto save
+  (auto-save-visited-mode 1)
+  (setq auto-save-visited-interval 30)
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backup")))
+  ;; make typing delete/overwrites selected text
+  (delete-selection-mode 1)
+  ;; start the initial frame maximized
+  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+  ;; start every frame maximized
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  (prefer-coding-system 'utf-8)
+  ;; Set custom file
+  (setq custom-file (expand-file-name "custom-vars.el" user-emacs-directory))
+  (unless (file-exists-p custom-file)
+    (with-temp-buffer (write-file custom-file)))
+  (load custom-file))
 
 (use-package dired
-  :ensure nil
+  :custom
+  (dired-dwim-target t)
   :config
   (when (string-equal system-type "darwin")
     (setq dired-use-ls-dired nil)))
 
+(use-package prog-mode
+  :custom
+  (typescript-ts-mode-indent-offset 4)
+  (treesit-font-lock-level 4)
+  (indent-tabs-mode nil)
+  (tab-width 4)
+  :config
+  (which-function-mode 1)
+  (show-paren-mode 1)
+  (electric-pair-mode 1))
 
-(if (display-graphic-p) (tool-bar-mode -1))
+(use-package eglot
+  :hook ((cmake-mode
+          cmake-ts-mode
+          csharp-mode
+          csharp-ts-mode
+          css-ts-mode
+          c-mode
+          c-ts-mode
+          c++-mode
+          c++-ts-mode
+          python-base-mode
+          tsx-ts-mode)
+         . eglot-ensure))
 
-;; common
-(setq use-short-answers t)
 ;; keep a list of recently opened files
-(require 'recentf)
-(recentf-mode 1)
-(when (eq system-type 'darwin)
-  (setq ns-use-native-fullscreen nil)
-  (setq ns-pop-up-frames nil))
-
-(add-hook 'prog-mode-hook
-          (lambda ()
-            (setq typescript-ts-mode-indent-offset 4)
-            (setq treesit-font-lock-level 4)
-            (setq indent-tabs-mode nil)
-            (setq tab-width 4)
-            (which-function-mode 1)
-            (show-paren-mode 1)
-            (electric-pair-mode 1)
-            (eglot-ensure)))
-
-(when (>= emacs-major-version 26)
-  ;; real auto save
-  (auto-save-visited-mode 1)
-  (setq auto-save-visited-interval 30))
-
-(setq backup-directory-alist '(("." . "~/.emacs.d/backup")))
-
-;; make typing delete/overwrites selected text
-(delete-selection-mode 1)
-
-;; dired
-(setq dired-dwim-target t)
-
-(set-face-attribute 'default nil :height 160) ; 160 is equivalent to 12pt font size
-
-;; start the initial frame maximized
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
-
-;; start every frame maximized
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+(use-package recentf
+  :config
+  (recentf-mode t))
 
 ;; mark and region
 (use-package expand-region
@@ -130,9 +132,9 @@
   (shell-pop-full-span t)
   (shell-pop-window-position "bottom"))
 
-(prefer-coding-system 'utf-8)
-
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(use-package display-line-numbers
+  :hook
+  (prog-mode . display-line-numbers-mode))
 
 (use-package vertico
   :ensure t
@@ -195,17 +197,20 @@
   (corfu-quit-at-boundary nil)
   (corfu-quit-no-match t)
   (corfu-preview-current nil)
-  (corfu-preselect 'first)
+  (corfu-preselect 'directory)
   :hook ((after-init . global-corfu-mode)
-         (global-corfu-mode . corfu-popupinfo-mode)))
+         (corfu-mode . corfu-popupinfo-mode))
+  :config
+  ;; when in shell or eshell, when press RET, it will send it to the shell directly, which will save another RET.
+  (define-key corfu-map (kbd "RET")
+              `(menu-item "" nil :filter ,(lambda (&optional _) (and (or (derived-mode-p 'eshell-mode) (derived-mode-p 'comint-mode)) #'corfu-send)))))
 
 (use-package corfu-terminal
   :unless window-system
   :ensure t
   :after corfu
   :config
-  (corfu-terminal-mode)
-  )
+  (corfu-terminal-mode))
 
 ;; Optionally enable icons in Corfu
 (use-package kind-icon
@@ -229,9 +234,9 @@
      `(hl-line ((t (:background ,zenburn-bg+1 ))))
      )))
 
-(add-hook 'prog-mode-hook #'hl-line-mode)
-(add-hook 'text-mode-hook #'hl-line-mode)
-(add-hook 'dired-mode-hook #'hl-line-mode)
+(use-package hl-line
+  :hook
+  ((prog-mode text-mode dired-mode) . hl-line-mode))
 
 (use-package all-the-icons
   :ensure t
@@ -243,7 +248,7 @@
   (dashboard-setup-startup-hook)
   ;; for further config look at:
   ;; https://github.com/emacs-dashboard/emacs-dashboard
-  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*"))
+  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*"))
         dashboard-banner-logo-title "Welcome back!"
         dashboard-startup-banner 'logo
         dashboard-center-content t
@@ -375,6 +380,7 @@
   )
 
 (use-package general
+  :ensure t
   :config
   ;; global key bindings without prefix
   ;; some key bindings may be related to minor modes
@@ -419,12 +425,6 @@
   ;; global key bindings with prefix
   ;; some key bindings maybe related to minor modes
   )
-
-;; Set custom file
-(setq custom-file (expand-file-name "custom-vars.el" user-emacs-directory))
-(unless (file-exists-p custom-file)
-  (with-temp-buffer (write-file custom-file)))
-(load custom-file)
 
 (provide 'init)
 ;;; init.el ends here
