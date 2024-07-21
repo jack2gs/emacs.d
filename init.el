@@ -4,8 +4,8 @@
 ;;; Code:
 (setq package-archives '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
                          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-			             ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
-			             ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+			 ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
+			 ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
 
 ;; common
 (use-package emacs
@@ -16,7 +16,9 @@
   (if (display-graphic-p) (tool-bar-mode -1))
   (when (eq system-type 'darwin)
     (setq ns-use-native-fullscreen nil)
-    (setq ns-pop-up-frames nil))
+    (setq ns-pop-up-frames nil)
+    )
+  
   ;; real auto save
   (auto-save-visited-mode 1)
   (setq auto-save-visited-interval 30)
@@ -233,12 +235,12 @@
   :config
   (load-theme 'zenburn t)
   (zenburn-with-color-variables
-    (custom-theme-set-faces
-     'zenburn
+   (custom-theme-set-faces
+    'zenburn
 ;;;;; hl-line-mode
-     `(hl-line-face ((t (:background ,zenburn-bg+1 ))))
-     `(hl-line ((t (:background ,zenburn-bg+1 ))))
-     )))
+    `(hl-line-face ((t (:background ,zenburn-bg+1 ))))
+    `(hl-line ((t (:background ,zenburn-bg+1 ))))
+    )))
 
 (use-package hl-line
   :hook
@@ -313,11 +315,11 @@
 
       (add-to-list 'auto-mode-alist '("\\.h\\'" . my-c-c++-header-mode))
       (dolist (mapping '(("\\.ts\\'" . tsx-ts-mode)
-				         ("\\.tsx\\'" . tsx-ts-mode)
-				         ("\\.js\\'" . tsx-ts-mode)
-				         ("\\.jsx\\'" . tsx-ts-mode)
-				         ("CMakeLists\\.txt\\'" . cmake-ts-mode)
-				         ("\\.cmake\\'" . cmake-ts-mode)))
+			 ("\\.tsx\\'" . tsx-ts-mode)
+			 ("\\.js\\'" . tsx-ts-mode)
+			 ("\\.jsx\\'" . tsx-ts-mode)
+			 ("CMakeLists\\.txt\\'" . cmake-ts-mode)
+			 ("\\.cmake\\'" . cmake-ts-mode)))
         (add-to-list 'major-mode-remap-alist mapping))
 
       (dolist (mapping '((c-mode . c-ts-mode)
@@ -415,7 +417,11 @@
    [remap bookmark-jump] 'consult-bookmark
    [remap go-to-line] 'consult-goto-line
    [remap isearch-forward-regexp] 'consult-ripgrep)
-  
+
+  (when (eq system-type 'darwin)
+    (general-define-key
+     "M-`" 'shell-pop))
+
   (general-define-key
    :keymaps 'prog-mode-map
    "<f5>" 'dape
