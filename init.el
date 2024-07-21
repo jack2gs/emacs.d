@@ -18,7 +18,6 @@
     (setq ns-use-native-fullscreen nil)
     (setq ns-pop-up-frames nil)
     )
-  
   ;; real auto save
   (auto-save-visited-mode 1)
   (setq auto-save-visited-interval 30)
@@ -387,6 +386,9 @@
   ;; (add-hook 'dape-start-hook (lambda () (save-some-buffers t t)))
   )
 
+(use-package goto-chg
+  :ensure t)
+   
 (use-package general
   :ensure t
   :config
@@ -397,9 +399,8 @@
    "<f12>" 'xref-find-definitions
    "S-<f12>" 'xref-find-references
    "C-M-=" 'er/expand-region
-   "M-<left>" 'backward-global-mark
-   "M-<right>" 'forward-global-mark
    "C-`" 'shell-pop
+   "M-`" 'shell-pop
    "M-0" 'treemacs-select-window
    "C-." 'embark-act
    "C-;" 'embark-dwim
@@ -408,6 +409,13 @@
    "C->" 'mc/mark-next-like-this
    "C-<" 'mc/mark-previous-like-this
    "C-*" 'mc/mark-all-like-this
+   ;; mark ring
+   "M-g m" 'consult-mark
+   "M-g M" 'consult-global-mark
+   "M-<left>" 'goto-last-change
+   "M-<right>" 'goto-last-change-reverse
+   "C--" 'goto-last-change
+   "C-_" 'goto-last-change-reverse
    [remap goto-char] 'avy-goto-char-timer
    [remap isearch-forward] 'consult-line
    ;;[remap find-file] 'consult-find
@@ -417,11 +425,6 @@
    [remap bookmark-jump] 'consult-bookmark
    [remap go-to-line] 'consult-goto-line
    [remap isearch-forward-regexp] 'consult-ripgrep)
-
-  (if (not (display-graphic-p))
-  (when (eq system-type 'darwin)
-    (general-define-key
-     "M-`" 'shell-pop)))
 
   (general-define-key
    :keymaps 'prog-mode-map
