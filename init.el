@@ -418,9 +418,10 @@
    [remap go-to-line] 'consult-goto-line
    [remap isearch-forward-regexp] 'consult-ripgrep)
 
+  (if (not (display-graphic-p))
   (when (eq system-type 'darwin)
     (general-define-key
-     "M-`" 'shell-pop))
+     "M-`" 'shell-pop)))
 
   (general-define-key
    :keymaps 'prog-mode-map
