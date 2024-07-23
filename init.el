@@ -7,6 +7,16 @@
 			 ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
 			 ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
 
+(use-package pyvenv
+  :ensure t
+  :defer t
+  :hook
+  ((python-mode python-ts-mode) . pyvenv-mode)
+  )
+
+(use-package jupyter
+  :ensure t)
+
 ;; common
 (use-package emacs
   :custom
