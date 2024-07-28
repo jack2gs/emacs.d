@@ -242,7 +242,8 @@ If the name ends with '/', it's a directory otherwise it's a file."
                     #'cape-dabbrev
                     #'cape-file))))
   :hook ((after-init . global-corfu-mode)
-         (corfu-mode . corfu-popupinfo-mode))
+         (corfu-mode . corfu-popupinfo-mode)
+         (eshell-mode . (lambda () (setq-local corfu-auto nil))))
   :config
   ;; when in shell or eshell, when press RET, it will send it to the shell directly, which will save another RET.
   (define-key corfu-map (kbd "RET")
