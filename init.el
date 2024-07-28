@@ -4,30 +4,32 @@
 ;;; Code:
 (setq package-archives '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
                          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-			 ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
-			 ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+			             ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
+			             ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+
+(use-package rainbow-mode
+  :ensure t)
 
 (use-package pyvenv
   :ensure t
-  :defer t
   :hook
-  ((python-mode python-ts-mode) . pyvenv-mode)
-  )
+  ((python-mode python-ts-mode) . pyvenv-mode))
 
 (use-package jupyter
-  :ensure t)
+  :ensure t
+  :defer t)
 
 ;; common
 (use-package emacs
   :custom
   (use-short-answers t)
+  (completion-ignore-case t)
   :config
   (set-face-attribute 'default nil :height 160) ; 160 is equivalent to 12pt font size
   (if (display-graphic-p) (tool-bar-mode -1))
   (when (eq system-type 'darwin)
     (setq ns-use-native-fullscreen nil)
-    (setq ns-pop-up-frames nil)
-    )
+    (setq ns-pop-up-frames nil))
   ;; real auto save
   (auto-save-visited-mode 1)
   (setq auto-save-visited-interval 30)
@@ -56,7 +58,35 @@
   (dired-dwim-target t)
   :config
   (when (string-equal system-type "darwin")
-    (setq dired-use-ls-dired nil)))
+    (setq dired-use-ls-dired nil))
+  (defun melon/create-file-or-directory (name)
+    "Create a file or folder. If NAME ends with /, create a folder. Otherwise, create a file. 
+If the parent directories don't exist, create them as well."
+    (interactive "Enter name: ")
+    (let ((path (expand-file-name name (dired-current-directory))))
+      (message "file name: %s" path)
+      (if (string-suffix-p "/" name)
+          (progn
+            (message "create directory: %s" path)
+            (dired-create-directory path))  ;; Create directory, create parents if necessary            
+        (progn
+          (message "create file: %s" path)
+          ;; Create parent directories if necessary
+          (let ((dir (file-name-directory path))
+                (file_name (file-name-nondirectory path)))
+            (unless (file-exists-p dir)
+              (make-directory dir  t))
+            (dired-create-empty-file path)
+            (revert-buffer))))))  ;; Create an empty file
+  (defun melon/dired-create-files-or-directories (names)
+    "Create empty files or directories.
+If the name ends with '/', it's a directory otherwise it's a file."
+    (interactive (list (split-string (read-string "sEnter names: "))))
+    (dolist (name names)
+      (melon/create-file-or-directory name))
+    (revert-buffer))
+  :bind (:map dired-mode-map
+              ([remap dired-create-directory] . melon/dired-create-files-or-directories)))
 
 (use-package prog-mode
   :custom
@@ -74,14 +104,31 @@
           cmake-ts-mode
           csharp-mode
           csharp-ts-mode
+          css-mode
           css-ts-mode
+          scss-mode
+          scss-ts-mode
+          less-css-mode
           c-mode
           c-ts-mode
           c++-mode
           c++-ts-mode
           python-base-mode
           tsx-ts-mode)
-         . eglot-ensure))
+         . eglot-ensure)
+  :init
+  (setq eglot-workspace-configuration
+        '((:css . (:validate t
+                             :lint (:validate t)))
+          (:scss . (:validate t
+                              :lint (:validate t)))
+          (:less . (:validate t
+                              :lint (:validate t)))))
+  :config
+  (add-to-list 'eglot-server-programs
+			   '((scss-mode :language-id "scss") . ("vscode-css-language-server" "--stdio")))
+  (add-to-list 'eglot-server-programs
+			   '((less-css-mode :language-id "less") . ("vscode-css-language-server" "--stdio"))))
 
 ;; keep a list of recently opened files
 (use-package recentf
@@ -92,41 +139,9 @@
 (use-package expand-region
   :ensure t)
 
-(defun marker-is-point-p (marker)
-  "test if marker is current point"
-  (and (eq (marker-buffer marker) (current-buffer))
-       (= (marker-position marker) (point))))
-
-(defun push-mark-maybe () 
-  "push mark onto `global-mark-ring' if mark head or tail is not current location"
-  (if (not global-mark-ring) (error "global-mark-ring empty")
-    (unless (or (marker-is-point-p (car global-mark-ring))
-                (marker-is-point-p (car (reverse global-mark-ring))))
-      (push-mark))))
-
-(defun backward-global-mark () 
-  "use `pop-global-mark', pushing current point if not on ring."
-  (interactive)
-  (push-mark-maybe)
-  (when (marker-is-point-p (car global-mark-ring))
-    (call-interactively 'pop-global-mark))
-  (call-interactively 'pop-global-mark))
-
-(defun forward-global-mark ()
-  "hack `pop-global-mark' to go in reverse, pushing current point if not on ring."
-  (interactive)
-  (push-mark-maybe)
-  (setq global-mark-ring (nreverse global-mark-ring))
-  (when (marker-is-point-p (car global-mark-ring))
-    (call-interactively 'pop-global-mark))
-  (call-interactively 'pop-global-mark)
-  (setq global-mark-ring (nreverse global-mark-ring)))
-
 (use-package visible-mark
-  :ensure t
-  :config
-  ;; Enable visible-mark-mode globally
-  (global-visible-mark-mode 1)
+  :defer t
+  :custom
   ;; Set the number of marks to highlight
   (setq visible-mark-max 100)
   ;; Set the faces for the marks
@@ -138,6 +153,7 @@
 ;; shell config
 (use-package shell-pop
   :ensure t
+  :defer t
   :custom
   (shell-pop-shell-type '("eshell" "*eshell*" (lambda () (eshell))))
   (cond
@@ -215,12 +231,25 @@
   (corfu-quit-no-match t)
   (corfu-preview-current nil)
   (corfu-preselect 'directory)
+  ;; Option 1: Specify explicitly to use Orderless for Eglot
+  (completion-category-overrides '((eglot (styles orderless))
+                                   (eglot-capf (styles orderless))))
+  :init
+  (defun my/eglot-capf ()
+    (setq-local completion-at-point-functions
+                `(,(cape-capf-super
+                    #'eglot-completion-at-point
+                    #'cape-dabbrev
+                    #'cape-file))))
   :hook ((after-init . global-corfu-mode)
          (corfu-mode . corfu-popupinfo-mode))
   :config
   ;; when in shell or eshell, when press RET, it will send it to the shell directly, which will save another RET.
   (define-key corfu-map (kbd "RET")
-              `(menu-item "" nil :filter ,(lambda (&optional _) (and (or (derived-mode-p 'eshell-mode) (derived-mode-p 'comint-mode)) #'corfu-send)))))
+              `(menu-item "" nil :filter ,(lambda (&optional _) (and (or (derived-mode-p 'eshell-mode) (derived-mode-p 'comint-mode)) #'corfu-send))))
+  (add-hook 'eglot-managed-mode-hook #'my/eglot-capf)
+  ;;(advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
+  )
 
 (use-package corfu-terminal
   :unless window-system
@@ -228,6 +257,36 @@
   :after corfu
   :config
   (corfu-terminal-mode))
+
+(use-package cape
+  :ensure t
+  :after corfu
+  :init
+  ;;  (setq cape-dabbrev-min-length 2)
+  ;;  (setq cape-dabbrev-check-other-buffers 'some)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-history)
+  :bind ("C-c SPC" . cape-dabbrev))
+
+(use-package dabbrev
+  :custom
+  ;; just match alphanumeric characters and underscores
+  ;; incase 'app.' matches 'application' by mistake
+  ;; (dabbrev-abbrev-char-regexp "\\([^-._[:alnum:]]\\|\\'\\)")
+  (dabbrev-case-fold-search nil) ;; case sensitive
+  (dabbrev-upcase-means-case-search t)
+  (dabbrev-check-all-buffers nil)
+  (dabbrev-check-other-buffers nil)
+  (dabbrev-friend-buffer-function 'dabbrev--same-major-mode-p)
+  (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
+
+(use-package yasnippet
+  :ensure t
+  ;; eglot looks like will enable it by default for lsp
+  ;; https://github.com/joaotavora/eglot/blob/db91d58374627a195b731a61bead9b4f84a7e4bc/eglot.el#L1797
+  :hook
+  (prog-mode . yas-global-mode))
 
 ;; Optionally enable icons in Corfu
 (use-package kind-icon
@@ -244,12 +303,11 @@
   :config
   (load-theme 'zenburn t)
   (zenburn-with-color-variables
-   (custom-theme-set-faces
-    'zenburn
-;;;;; hl-line-mode
-    `(hl-line-face ((t (:background ,zenburn-bg+1 ))))
-    `(hl-line ((t (:background ,zenburn-bg+1 ))))
-    )))
+    (custom-theme-set-faces
+     'zenburn
+     ;; hl-line-mode
+     `(hl-line-face ((t (:background ,zenburn-bg+1 ))))
+     `(hl-line ((t (:background ,zenburn-bg+1 )))))))
 
 (use-package hl-line
   :hook
@@ -288,6 +346,7 @@
 
 (use-package avy
   :ensure t
+  :defer t
   :init
   (setq avy-case-fold-search nil))
 
@@ -310,9 +369,6 @@
 
 (if (treesit-available-p)
     (progn
-      (add-to-list 'auto-mode-alist '("\\.ts\\'" . tsx-ts-mode))
-      (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
-
       (defun my-c-c++-header-mode ()
         "Set either `c-mode` or `c++-mode` depending on the content of the header."
         (interactive)
@@ -321,22 +377,21 @@
           (if (re-search-forward "^\s*#\s*if\\(n\\|\\)def\\|class\\|namespace\\|template\\|public:" nil t)
               (c++-mode)
             (c-mode))))
-
       (add-to-list 'auto-mode-alist '("\\.h\\'" . my-c-c++-header-mode))
       (dolist (mapping '(("\\.ts\\'" . tsx-ts-mode)
-			 ("\\.tsx\\'" . tsx-ts-mode)
-			 ("\\.js\\'" . tsx-ts-mode)
-			 ("\\.jsx\\'" . tsx-ts-mode)
-			 ("CMakeLists\\.txt\\'" . cmake-ts-mode)
-			 ("\\.cmake\\'" . cmake-ts-mode)))
-        (add-to-list 'major-mode-remap-alist mapping))
-
+			             ("\\.tsx\\'" . tsx-ts-mode)
+			             ("\\.js\\'" . tsx-ts-mode)
+			             ("\\.jsx\\'" . tsx-ts-mode)
+                         ("\\.scss\\'" . scss-mode)
+                         ("\\.less\\'" . less-css-mode)
+			             ("CMakeLists\\.txt\\'" . cmake-ts-mode)
+			             ("\\.cmake\\'" . cmake-ts-mode)))
+        (add-to-list 'auto-mode-alist mapping))
       (dolist (mapping '((c-mode . c-ts-mode)
                          (c++-mode . c++-ts-mode)
                          (csharp-mode . csharp-ts-mode)
                          (css-mode . css-ts-mode)))
-        (add-to-list 'major-mode-remap-alist mapping))
-      ))
+        (add-to-list 'major-mode-remap-alist mapping))))
 
 (use-package wgrep
   :ensure t)
@@ -398,7 +453,7 @@
 
 (use-package goto-chg
   :ensure t)
-   
+
 (use-package general
   :ensure t
   :config
