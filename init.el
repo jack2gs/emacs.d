@@ -6,108 +6,142 @@
                          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
 			             ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
 			             ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
-(package-initialize)
-;; Ensure use-package is installed
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
 
-;; Configure use-package
-(require 'use-package)
+(use-package rainbow-mode
+  :ensure t)
 
-(use-package general
+(use-package pyvenv
   :ensure t
-  )
+  :hook
+  ((python-mode python-ts-mode) . pyvenv-mode))
 
-(use-package dired
-  :ensure nil
-  :config
-  (when (string-equal system-type "darwin")
-    (setq dired-use-ls-dired nil)))
-
-
-(if (display-graphic-p) (tool-bar-mode -1))
+(use-package jupyter
+  :ensure t
+  :defer t)
 
 ;; common
-(setq use-short-answers t)
-;; keep a list of recently opened files
-(require 'recentf)
-(recentf-mode 1)
-(when (eq system-type 'darwin)
-  (setq ns-use-native-fullscreen nil)
-  (setq ns-pop-up-frames nil))
-
-(add-hook 'prog-mode-hook
-          (lambda ()
-            (setq typescript-ts-mode-indent-offset 4)
-            (setq treesit-font-lock-level 4)
-            (setq indent-tabs-mode nil)
-            (setq tab-width 4)
-            (which-function-mode 1)
-            (show-paren-mode 1)
-            (electric-pair-mode 1)
-            (eglot-ensure)))
-
-(when (>= emacs-major-version 26)
+(use-package emacs
+  :custom
+  (use-short-answers t)
+  (completion-ignore-case t)
+  :config
+  (set-face-attribute 'default nil :height 160) ; 160 is equivalent to 12pt font size
+  (if (display-graphic-p) (tool-bar-mode -1))
+  (when (eq system-type 'darwin)
+    (setq ns-use-native-fullscreen nil)
+    (setq ns-pop-up-frames nil))
   ;; real auto save
   (auto-save-visited-mode 1)
-  (setq auto-save-visited-interval 30))
+  (setq auto-save-visited-interval 30)
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backup")))
+  ;; make typing delete/overwrites selected text
+  (delete-selection-mode 1)
+  ;; start the initial frame maximized
+  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+  ;; start every frame maximized
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  (prefer-coding-system 'utf-8)
+  ;; Set custom file
+  (setq custom-file (expand-file-name "custom-vars.el" user-emacs-directory))
+  (unless (file-exists-p custom-file)
+    (with-temp-buffer (write-file custom-file)))
+  (load custom-file)
+  (setq inhibit-warning-function
+        (lambda (type message)
+          (or (and (eq type 'deprecation)
+                   (string-match-p "events-buffer-scrollback-size" message))
+              (and (eq type 'deprecation)
+                   (string-match-p "events-buffer-config" message))))))
 
-(setq backup-directory-alist '(("." . "~/.emacs.d/backup")))
+(use-package dired
+  :custom
+  (dired-dwim-target t)
+  :config
+  (when (string-equal system-type "darwin")
+    (setq dired-use-ls-dired nil))
+  (defun melon/create-file-or-directory (name)
+    "Create a file or folder. If NAME ends with /, create a folder. Otherwise, create a file. 
+If the parent directories don't exist, create them as well."
+    (interactive "Enter name: ")
+    (let ((path (expand-file-name name (dired-current-directory))))
+      (message "file name: %s" path)
+      (if (string-suffix-p "/" name)
+          (progn
+            (message "create directory: %s" path)
+            (dired-create-directory path))  ;; Create directory, create parents if necessary            
+        (progn
+          (message "create file: %s" path)
+          ;; Create parent directories if necessary
+          (let ((dir (file-name-directory path))
+                (file_name (file-name-nondirectory path)))
+            (unless (file-exists-p dir)
+              (make-directory dir  t))
+            (dired-create-empty-file path)
+            (revert-buffer))))))  ;; Create an empty file
+  (defun melon/dired-create-files-or-directories (names)
+    "Create empty files or directories.
+If the name ends with '/', it's a directory otherwise it's a file."
+    (interactive (list (split-string (read-string "sEnter names: "))))
+    (dolist (name names)
+      (melon/create-file-or-directory name))
+    (revert-buffer))
+  :bind (:map dired-mode-map
+              ([remap dired-create-directory] . melon/dired-create-files-or-directories)))
 
-;; make typing delete/overwrites selected text
-(delete-selection-mode 1)
+(use-package prog-mode
+  :custom
+  (typescript-ts-mode-indent-offset 4)
+  (treesit-font-lock-level 4)
+  (indent-tabs-mode nil)
+  (tab-width 4)
+  :config
+  (which-function-mode 1)
+  (show-paren-mode 1)
+  (electric-pair-mode 1))
 
-;; dired
-(setq dired-dwim-target t)
+(use-package eglot
+  :hook ((cmake-mode
+          cmake-ts-mode
+          csharp-mode
+          csharp-ts-mode
+          css-mode
+          css-ts-mode
+          scss-mode
+          scss-ts-mode
+          less-css-mode
+          c-mode
+          c-ts-mode
+          c++-mode
+          c++-ts-mode
+          python-base-mode
+          tsx-ts-mode)
+         . eglot-ensure)
+  :init
+  (setq eglot-workspace-configuration
+        '((:css . (:validate t
+                             :lint (:validate t)))
+          (:scss . (:validate t
+                              :lint (:validate t)))
+          (:less . (:validate t
+                              :lint (:validate t)))))
+  :config
+  (add-to-list 'eglot-server-programs
+			   '((scss-mode :language-id "scss") . ("vscode-css-language-server" "--stdio")))
+  (add-to-list 'eglot-server-programs
+			   '((less-css-mode :language-id "less") . ("vscode-css-language-server" "--stdio"))))
 
-(set-face-attribute 'default nil :height 160) ; 160 is equivalent to 12pt font size
-
-;; start the initial frame maximized
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
-
-;; start every frame maximized
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; keep a list of recently opened files
+(use-package recentf
+  :config
+  (recentf-mode t))
 
 ;; mark and region
 (use-package expand-region
   :ensure t)
 
-(defun marker-is-point-p (marker)
-  "test if marker is current point"
-  (and (eq (marker-buffer marker) (current-buffer))
-       (= (marker-position marker) (point))))
-
-(defun push-mark-maybe () 
-  "push mark onto `global-mark-ring' if mark head or tail is not current location"
-  (if (not global-mark-ring) (error "global-mark-ring empty")
-    (unless (or (marker-is-point-p (car global-mark-ring))
-                (marker-is-point-p (car (reverse global-mark-ring))))
-      (push-mark))))
-
-(defun backward-global-mark () 
-  "use `pop-global-mark', pushing current point if not on ring."
-  (interactive)
-  (push-mark-maybe)
-  (when (marker-is-point-p (car global-mark-ring))
-    (call-interactively 'pop-global-mark))
-  (call-interactively 'pop-global-mark))
-
-(defun forward-global-mark ()
-  "hack `pop-global-mark' to go in reverse, pushing current point if not on ring."
-  (interactive)
-  (push-mark-maybe)
-  (setq global-mark-ring (nreverse global-mark-ring))
-  (when (marker-is-point-p (car global-mark-ring))
-    (call-interactively 'pop-global-mark))
-  (call-interactively 'pop-global-mark)
-  (setq global-mark-ring (nreverse global-mark-ring)))
-
 (use-package visible-mark
-  :ensure t
-  :config
-  ;; Enable visible-mark-mode globally
-  (global-visible-mark-mode 1)
+  :defer t
+  :custom
   ;; Set the number of marks to highlight
   (setq visible-mark-max 100)
   ;; Set the faces for the marks
@@ -119,6 +153,7 @@
 ;; shell config
 (use-package shell-pop
   :ensure t
+  :defer t
   :custom
   (shell-pop-shell-type '("eshell" "*eshell*" (lambda () (eshell))))
   (cond
@@ -130,9 +165,9 @@
   (shell-pop-full-span t)
   (shell-pop-window-position "bottom"))
 
-(prefer-coding-system 'utf-8)
-
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(use-package display-line-numbers
+  :hook
+  (prog-mode . display-line-numbers-mode))
 
 (use-package vertico
   :ensure t
@@ -191,6 +226,62 @@
   :hook
   (prog-mode . company-mode))
 
+(use-package dabbrev
+  :custom
+  ;; just match alphanumeric characters and underscores
+  ;; incase 'app.' matches 'application' by mistake
+  ;; (dabbrev-abbrev-char-regexp "\\([^-._[:alnum:]]\\|\\'\\)")
+  (dabbrev-case-fold-search nil) ;; case sensitive
+  (dabbrev-upcase-means-case-search t)
+  (dabbrev-check-all-buffers nil)
+  (dabbrev-check-other-buffers nil)
+  (dabbrev-friend-buffer-function 'dabbrev--same-major-mode-p)
+  (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
+
+(use-package yasnippet
+  :ensure t
+  ;; eglot looks like will enable it by default for lsp
+  ;; https://github.com/joaotavora/eglot/blob/db91d58374627a195b731a61bead9b4f84a7e4bc/eglot.el#L1797
+  :hook
+  (prog-mode . yas-global-mode))
+
+(use-package yasnippet-snippets
+  :ensure t
+  :after yasnippet)
+
+(use-package emmet-mode
+  :ensure t
+  :hook ((sgml-mode web-mode css-mode css-ts-mode scss-mode scss-ts-mode html-mode html-ts-mode) . emmet-mode)
+  :config
+  (defun my/emmet-expand-capf ()
+    (let ((bounds (bounds-of-thing-at-point 'word))
+          (tap (thing-at-point 'word)))
+      (list (car bounds) (cdr bounds)
+            ;; Just return the symbol at point to so completion will be possible
+            ;; TODO Determine if there is a less hacky option
+            ;; (let ((cands (lambda (string pred action)
+            ;;                (if (eq action t)
+            ;;                    cands
+            ;;                  (complete-with-action action (list (thing-at-point 'line)) string pred))))))
+
+            (lambda (string pred action) (complete-with-action action (list (thing-at-point 'word)) string pred))
+
+            ;; Annotate with what emmet expands to
+            ;; TODO find a way for this to show since right now
+            ;; corfu doesn't display this on a single completion
+            :annotation-function (lambda (str)  " Emmet Abbrev")
+            ;; Don't try to complete with emmet if there is no possible
+            ;; expansion
+            ;; :predicate (not (string= (emmet-transform tap)
+            ;;                          tap))
+            ;; Expand Emmet Template On Match
+            :exit-function (lambda (str status)
+                             (when (eql status 'finished)
+                               (emmet-expand-line nil)))
+            ;; Allow for other completions to follow
+            :exlcusive 'no)))
+  )
+
 ;; Optionally enable icons in Corfu
 (use-package kind-icon
   :ensure t
@@ -204,7 +295,17 @@
 (use-package zenburn-theme
   :ensure t
   :config
-  (load-theme 'zenburn t))
+  (load-theme 'zenburn t)
+  (zenburn-with-color-variables
+    (custom-theme-set-faces
+     'zenburn
+     ;; hl-line-mode
+     `(hl-line-face ((t (:background ,zenburn-bg+1 ))))
+     `(hl-line ((t (:background ,zenburn-bg+1 )))))))
+
+(use-package hl-line
+  :hook
+  ((prog-mode text-mode dired-mode) . hl-line-mode))
 
 (use-package all-the-icons
   :ensure t
@@ -216,7 +317,7 @@
   (dashboard-setup-startup-hook)
   ;; for further config look at:
   ;; https://github.com/emacs-dashboard/emacs-dashboard
-  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*"))
+  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*"))
         dashboard-banner-logo-title "Welcome back!"
         dashboard-startup-banner 'logo
         dashboard-center-content t
@@ -239,6 +340,7 @@
 
 (use-package avy
   :ensure t
+  :defer t
   :init
   (setq avy-case-fold-search nil))
 
@@ -261,9 +363,6 @@
 
 (if (treesit-available-p)
     (progn
-      (add-to-list 'auto-mode-alist '("\\.ts\\'" . tsx-ts-mode))
-      (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
-
       (defun my-c-c++-header-mode ()
         "Set either `c-mode` or `c++-mode` depending on the content of the header."
         (interactive)
@@ -272,22 +371,21 @@
           (if (re-search-forward "^\s*#\s*if\\(n\\|\\)def\\|class\\|namespace\\|template\\|public:" nil t)
               (c++-mode)
             (c-mode))))
-
       (add-to-list 'auto-mode-alist '("\\.h\\'" . my-c-c++-header-mode))
       (dolist (mapping '(("\\.ts\\'" . tsx-ts-mode)
-				         ("\\.tsx\\'" . tsx-ts-mode)
-				         ("\\.js\\'" . tsx-ts-mode)
-				         ("\\.jsx\\'" . tsx-ts-mode)
-				         ("CMakeLists\\.txt\\'" . cmake-ts-mode)
-				         ("\\.cmake\\'" . cmake-ts-mode)))
-        (add-to-list 'major-mode-remap-alist mapping))
-
+			             ("\\.tsx\\'" . tsx-ts-mode)
+			             ("\\.js\\'" . tsx-ts-mode)
+			             ("\\.jsx\\'" . tsx-ts-mode)
+                         ("\\.scss\\'" . scss-mode)
+                         ("\\.less\\'" . less-css-mode)
+			             ("CMakeLists\\.txt\\'" . cmake-ts-mode)
+			             ("\\.cmake\\'" . cmake-ts-mode)))
+        (add-to-list 'auto-mode-alist mapping))
       (dolist (mapping '((c-mode . c-ts-mode)
                          (c++-mode . c++-ts-mode)
                          (csharp-mode . csharp-ts-mode)
                          (css-mode . css-ts-mode)))
-        (add-to-list 'major-mode-remap-alist mapping))
-      ))
+        (add-to-list 'major-mode-remap-alist mapping))))
 
 (use-package wgrep
   :ensure t)
@@ -347,19 +445,21 @@
   ;; (add-hook 'dape-start-hook (lambda () (save-some-buffers t t)))
   )
 
+(use-package goto-chg
+  :ensure t)
+
 (use-package general
+  :ensure t
   :config
   ;; global key bindings without prefix
   ;; some key bindings may be related to minor modes
   (general-define-key
-   "<f5>" 'dape
    "<f6>" 'treemacs ; treemacs toggle
    "<f12>" 'xref-find-definitions
    "S-<f12>" 'xref-find-references
    "C-M-=" 'er/expand-region
-   "M-<left>" 'backward-global-mark
-   "M-<right>" 'forward-global-mark
    "C-`" 'shell-pop
+   "M-`" 'shell-pop
    "M-0" 'treemacs-select-window
    "C-." 'embark-act
    "C-;" 'embark-dwim
@@ -368,6 +468,13 @@
    "C->" 'mc/mark-next-like-this
    "C-<" 'mc/mark-previous-like-this
    "C-*" 'mc/mark-all-like-this
+   ;; mark ring
+   "M-g m" 'consult-mark
+   "M-g M" 'consult-global-mark
+   "M-<left>" 'goto-last-change
+   "M-<right>" 'goto-last-change-reverse
+   "C--" 'goto-last-change
+   "C-_" 'goto-last-change-reverse
    [remap goto-char] 'avy-goto-char-timer
    [remap isearch-forward] 'consult-line
    ;;[remap find-file] 'consult-find
@@ -377,27 +484,17 @@
    [remap bookmark-jump] 'consult-bookmark
    [remap go-to-line] 'consult-goto-line
    [remap isearch-forward-regexp] 'consult-ripgrep)
-  
+
   (general-define-key
    :keymaps 'prog-mode-map
+   "<f5>" 'dape
    "<f9>" 'dape-breakpoint-toggle
    "<f10>" 'dape-next
    "<f11>" 'dape-step-in
    "S-<f11>" 'dape-step-out
-   )
-  (general-define-key
-   :keymaps 'prog-mode-map
+   ;; lsp xref keybindings
    "C-<f12>" 'eglot-find-implementation
-   "C-M-<f12>" 'eglot-find-declaration)
-  ;; global key bindings with prefix
-  ;; some key bindings maybe related to minor modes
-  )
-
-;; Set custom file
-(setq custom-file (expand-file-name "custom-vars.el" user-emacs-directory))
-(unless (file-exists-p custom-file)
-  (with-temp-buffer (write-file custom-file)))
-(load custom-file)
+   "C-M-<f12>" 'eglot-find-declaration))
 
 (provide 'init)
 ;;; init.el ends here
