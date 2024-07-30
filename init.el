@@ -226,7 +226,7 @@ If the name ends with '/', it's a directory otherwise it's a file."
   :custom
   (corfu-cycle t)
   (corfu-auto t)
-  (corfu-auto-prefix 2)
+  (corfu-auto-prefix 1)
   (corfu-quit-at-boundary nil)
   (corfu-quit-no-match t)
   (corfu-preview-current nil)
@@ -239,6 +239,7 @@ If the name ends with '/', it's a directory otherwise it's a file."
     (setq-local completion-at-point-functions
                 `(,(cape-capf-super
                     #'eglot-completion-at-point
+                    ;;#'my/emmet-expand-capf
                     #'cape-dabbrev
                     #'cape-file))))
   :hook ((after-init . global-corfu-mode)
@@ -288,6 +289,44 @@ If the name ends with '/', it's a directory otherwise it's a file."
   ;; https://github.com/joaotavora/eglot/blob/db91d58374627a195b731a61bead9b4f84a7e4bc/eglot.el#L1797
   :hook
   (prog-mode . yas-global-mode))
+
+(use-package yasnippet-snippets
+  :ensure t
+  :after yasnippet)
+
+(use-package emmet-mode
+  :ensure t
+  :hook ((sgml-mode web-mode css-mode css-ts-mode scss-mode scss-ts-mode html-mode html-ts-mode) . emmet-mode)
+  :config
+  (defun my/emmet-expand-capf ()
+    (let ((bounds (bounds-of-thing-at-point 'word))
+          (tap (thing-at-point 'word)))
+      (list (car bounds) (cdr bounds)
+            ;; Just return the symbol at point to so completion will be possible
+            ;; TODO Determine if there is a less hacky option
+            ;; (let ((cands (lambda (string pred action)
+            ;;                (if (eq action t)
+            ;;                    cands
+            ;;                  (complete-with-action action (list (thing-at-point 'line)) string pred))))))
+
+            (lambda (string pred action) (complete-with-action action (list (thing-at-point 'word)) string pred))
+
+            ;; Annotate with what emmet expands to
+            ;; TODO find a way for this to show since right now
+            ;; corfu doesn't display this on a single completion
+            :annotation-function (lambda (str)  " Emmet Abbrev")
+            ;; Don't try to complete with emmet if there is no possible
+            ;; expansion
+            ;; :predicate (not (string= (emmet-transform tap)
+            ;;                          tap))
+            ;; Expand Emmet Template On Match
+            :exit-function (lambda (str status)
+                             (when (eql status 'finished)
+                               (emmet-expand-line nil)))
+            ;; Allow for other completions to follow
+            :exlcusive 'no)))
+  )
+
 
 ;; Optionally enable icons in Corfu
 (use-package kind-icon
