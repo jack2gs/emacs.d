@@ -240,6 +240,7 @@ If the name ends with '/', it's a directory otherwise it's a file."
                 `(,(cape-capf-super
                     #'eglot-completion-at-point
                     ;;#'my/emmet-expand-capf
+                    #'yasnippet-capf
                     #'cape-dabbrev
                     #'cape-file))))
   :hook ((after-init . global-corfu-mode)
@@ -270,6 +271,10 @@ If the name ends with '/', it's a directory otherwise it's a file."
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-history)
   :bind ("C-c SPC" . cape-dabbrev))
+
+(use-package yasnippet-capf
+  :ensure t
+  :after cape)
 
 (use-package dabbrev
   :custom
