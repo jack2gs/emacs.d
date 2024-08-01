@@ -293,7 +293,7 @@ If the name ends with '/', it's a directory otherwise it's a file."
   ;; eglot looks like will enable it by default for lsp
   ;; https://github.com/joaotavora/eglot/blob/db91d58374627a195b731a61bead9b4f84a7e4bc/eglot.el#L1797
   :hook
-  (prog-mode . yas-global-mode))
+  (prog-mode . yas-minor-mode))
 
 (use-package yasnippet-snippets
   :ensure t
