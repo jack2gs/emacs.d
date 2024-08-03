@@ -109,10 +109,10 @@ If the name ends with '/', it's a directory otherwise it's a file."
           scss-mode
           scss-ts-mode
           less-css-mode
-          c-mode
-          c-ts-mode
-          c++-mode
-          c++-ts-mode
+          ;; c-mode
+          ;; c-ts-mode
+          ;; c++-mode
+          ;; c++-ts-mode
           python-base-mode
           tsx-ts-mode)
          . eglot-ensure)
@@ -129,6 +129,33 @@ If the name ends with '/', it's a directory otherwise it's a file."
 			   '((scss-mode :language-id "scss") . ("vscode-css-language-server" "--stdio")))
   (add-to-list 'eglot-server-programs
 			   '((less-css-mode :language-id "less") . ("vscode-css-language-server" "--stdio"))))
+
+;; special setup for C/C++
+(use-package irony
+  :ensure t
+  :custom
+  (irony-supported-major-modes '(c++-mode c-mode objc-mode c++-ts-mode c-ts-mode))
+  :config
+  (add-hook 'c++-ts-mode-hook 'irony-mode)
+  (add-hook 'c-ts-mode-hook 'irony-mode)
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+
+(use-package ggtags
+  :ensure t
+  :hook ((c-mode c-ts-mode c++-mode c++-ts-mode) . ggtags-mode))
+
+;; (use-package company
+;;   :ensure t
+;;   :config
+;;   (setq company-backends (delete 'company-semantic company-backends)) ; optional
+;;   ;;(define-key c++-ts-mode-map  [(tab)] 'company-complete)
+;;   (add-hook 'c++-ts-mode-hook 'company-mode))
+
+;; (use-package company-irony
+;;   :ensure t
+;;   :config
+;;   (eval-after-load 'company
+;;     '(add-to-list 'company-backends 'company-irony)))
 
 ;; keep a list of recently opened files
 (use-package recentf
@@ -243,7 +270,8 @@ If the name ends with '/', it's a directory otherwise it's a file."
                     #'yasnippet-capf
                     #'cape-dabbrev
                     #'cape-file))))
-  :hook ((after-init . global-corfu-mode)
+  :hook (
+         (after-init . global-corfu-mode)
          (corfu-mode . corfu-popupinfo-mode)
          (eshell-mode . (lambda () (setq-local corfu-auto nil))))
   :config
