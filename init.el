@@ -109,10 +109,10 @@ If the name ends with '/', it's a directory otherwise it's a file."
           scss-mode
           scss-ts-mode
           less-css-mode
-          ;; c-mode
-          ;; c-ts-mode
-          ;; c++-mode
-          ;; c++-ts-mode
+          c-mode
+          c-ts-mode
+          c++-mode
+          c++-ts-mode
           python-base-mode
           tsx-ts-mode)
          . eglot-ensure)
@@ -131,18 +131,18 @@ If the name ends with '/', it's a directory otherwise it's a file."
 			   '((less-css-mode :language-id "less") . ("vscode-css-language-server" "--stdio"))))
 
 ;; special setup for C/C++
-(use-package irony
-  :ensure t
-  :custom
-  (irony-supported-major-modes '(c++-mode c-mode objc-mode c++-ts-mode c-ts-mode))
-  :config
-  (add-hook 'c++-ts-mode-hook 'irony-mode)
-  (add-hook 'c-ts-mode-hook 'irony-mode)
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+;; (use-package irony
+;;   :ensure t
+;;   :custom
+;;   (irony-supported-major-modes '(c++-mode c-mode objc-mode c++-ts-mode c-ts-mode))
+;;   :config
+;;   (add-hook 'c++-ts-mode-hook 'irony-mode)
+;;   (add-hook 'c-ts-mode-hook 'irony-mode)
+;;   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 
-(use-package ggtags
-  :ensure t
-  :hook ((c-mode c-ts-mode c++-mode c++-ts-mode) . ggtags-mode))
+;; (use-package ggtags
+;;   :ensure t
+;;   :hook ((c-mode c-ts-mode c++-mode c++-ts-mode) . ggtags-mode))
 
 ;; (use-package company
 ;;   :ensure t
