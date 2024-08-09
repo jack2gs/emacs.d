@@ -100,6 +100,24 @@ If the name ends with '/', it's a directory otherwise it's a file."
   (electric-pair-mode 1))
 
 (use-package eglot
+  :init
+  (defun my-defer-eglot ()
+    "Defer eglot until after file is loaded."
+    (unless (bound-and-true-p eglot--managed-mode)
+      (run-with-idle-timer 1 nil #'eglot-ensure)))
+  (setq eglot-workspace-configuration
+        '((:css . (:validate t
+                             :lint (:validate t)))
+          (:scss . (:validate t
+                              :lint (:validate t)))
+          (:less . (:validate t
+                              :lint (:validate t)))))
+  
+  :config
+  (add-to-list 'eglot-server-programs
+			   '((scss-mode :language-id "scss") . ("vscode-css-language-server" "--stdio")))
+  (add-to-list 'eglot-server-programs
+			   '((less-css-mode :language-id "less") . ("vscode-css-language-server" "--stdio")))
   :hook ((cmake-mode
           cmake-ts-mode
           csharp-mode
@@ -115,20 +133,7 @@ If the name ends with '/', it's a directory otherwise it's a file."
           c++-ts-mode
           python-base-mode
           tsx-ts-mode)
-         . eglot-ensure)
-  :init
-  (setq eglot-workspace-configuration
-        '((:css . (:validate t
-                             :lint (:validate t)))
-          (:scss . (:validate t
-                              :lint (:validate t)))
-          (:less . (:validate t
-                              :lint (:validate t)))))
-  :config
-  (add-to-list 'eglot-server-programs
-			   '((scss-mode :language-id "scss") . ("vscode-css-language-server" "--stdio")))
-  (add-to-list 'eglot-server-programs
-			   '((less-css-mode :language-id "less") . ("vscode-css-language-server" "--stdio"))))
+         . my-defer-eglot))
 
 ;; special setup for C/C++
 ;; (use-package irony
