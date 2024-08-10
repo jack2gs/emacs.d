@@ -112,7 +112,7 @@ If the name ends with '/', it's a directory otherwise it's a file."
                               :lint (:validate t)))
           (:less . (:validate t
                               :lint (:validate t)))))
-  
+  (setq eglot-events-buffer-config '(:size 0))
   :config
   (add-to-list 'eglot-server-programs
 			   '((scss-mode :language-id "scss") . ("vscode-css-language-server" "--stdio")))
@@ -133,7 +133,11 @@ If the name ends with '/', it's a directory otherwise it's a file."
           c++-ts-mode
           python-base-mode
           tsx-ts-mode)
-         . my-defer-eglot))
+         . eglot-ensure))
+
+(use-package eglot-booster
+	:after eglot
+	:config	(eglot-booster-mode))
 
 ;; special setup for C/C++
 ;; (use-package irony
@@ -258,7 +262,7 @@ If the name ends with '/', it's a directory otherwise it's a file."
   :custom
   (corfu-cycle t)
   (corfu-auto t)
-  (corfu-auto-prefix 1)
+  (corfu-auto-prefix 2)
   (corfu-quit-at-boundary nil)
   (corfu-quit-no-match t)
   (corfu-preview-current nil)
