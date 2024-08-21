@@ -132,6 +132,7 @@ If the name ends with '/', it's a directory otherwise it's a file."
           c++-mode
           c++-ts-mode
           python-base-mode
+          rust-ts-mode
           tsx-ts-mode)
          . eglot-ensure))
 
@@ -464,6 +465,7 @@ If the name ends with '/', it's a directory otherwise it's a file."
 			             ("\\.tsx\\'" . tsx-ts-mode)
 			             ("\\.js\\'" . tsx-ts-mode)
 			             ("\\.jsx\\'" . tsx-ts-mode)
+                         ("\\.rs\\'" . rust-ts-mode)
                          ("\\.scss\\'" . scss-mode)
                          ("\\.less\\'" . less-css-mode)
 			             ("CMakeLists\\.txt\\'" . cmake-ts-mode)
