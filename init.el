@@ -15,6 +15,7 @@
   :hook
   ((python-mode python-ts-mode) . pyvenv-mode))
 
+
 (use-package jupyter
   :ensure t
   :defer t)
@@ -88,6 +89,11 @@ If the name ends with '/', it's a directory otherwise it's a file."
   :bind (:map dired-mode-map
               ([remap dired-create-directory] . melon/dired-create-files-or-directories)))
 
+;; Set indentation level for Python mode explicitly
+;; Prevent Emacs from guessing the python-indent-offset
+(setq python-indent-guess-indent-offset nil)
+(setq python-indent-offset 4)
+
 (use-package prog-mode
   :custom
   (typescript-ts-mode-indent-offset 4)
@@ -136,9 +142,26 @@ If the name ends with '/', it's a directory otherwise it's a file."
           tsx-ts-mode)
          . eglot-ensure))
 
-(use-package eglot-booster
-	:after eglot
-	:config	(eglot-booster-mode))
+(use-package flycheck
+  :ensure t
+  :hook (prog-mode . flycheck-mode))
+
+(use-package flycheck-eglot
+  :ensure t
+  :after (flycheck eglot)
+  :config
+  (global-flycheck-eglot-mode 1))
+
+(use-package clang-format+
+  :ensure t
+  :init
+  (setq clang-format+-always-enable t)
+  :hook
+  ((c-ts-mode c++-ts-mode) .  #'clang-format+-mode))
+
+;; (use-package eglot-booster
+;; 	:after eglot
+;; 	:config	(eglot-booster-mode))
 
 ;; special setup for C/C++
 ;; (use-package irony
