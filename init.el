@@ -124,6 +124,17 @@ If the name ends with '/', it's a directory otherwise it's a file."
 			   '((scss-mode :language-id "scss") . ("vscode-css-language-server" "--stdio")))
   (add-to-list 'eglot-server-programs
 			   '((less-css-mode :language-id "less") . ("vscode-css-language-server" "--stdio")))
+  (add-to-list 'eglot-server-programs
+               '((c-mode c++-mode c-ts-mode c++-ts-mode)
+                 . ("clangd"
+                    "-j=4"
+                    "--log=error"
+                    "--background-index"
+                    "--clang-tidy"
+                    "--completion-style=detailed"
+                    "--pch-storage=memory"
+                    "--header-insertion=never"
+                    "--header-insertion-decorators=0")))
   :hook ((cmake-mode
           cmake-ts-mode
           csharp-mode
