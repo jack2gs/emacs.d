@@ -127,7 +127,7 @@ If the name ends with '/', it's a directory otherwise it's a file."
   (add-to-list 'eglot-server-programs
                '((c-mode c++-mode c-ts-mode c++-ts-mode)
                  . ("clangd"
-                    "-j=4"
+                    "-j=8"
                     "--log=error"
                     "--background-index"
                     "--clang-tidy"
