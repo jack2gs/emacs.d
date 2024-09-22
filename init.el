@@ -132,6 +132,8 @@ If the name ends with '/', it's a directory otherwise it's a file."
                     "--background-index"
                     "--clang-tidy"
                     "--completion-style=detailed"
+                    "--all-scopes-completion"
+                    "--function-arg-placeholders"
                     "--pch-storage=memory"
                     "--header-insertion=never"
                     "--header-insertion-decorators=0")))
