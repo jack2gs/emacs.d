@@ -107,6 +107,7 @@ If the name ends with '/', it's a directory otherwise it's a file."
 
 (use-package eldoc-box
   :ensure t
+  :if (display-graphic-p)
   :hook (eglot-managed-mode . eldoc-box-hover-at-point-mode)
   :config
   (setq eldoc-box-max-pixel-width 400   ;; Control popup width
