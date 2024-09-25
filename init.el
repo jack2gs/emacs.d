@@ -105,6 +105,13 @@ If the name ends with '/', it's a directory otherwise it's a file."
   (show-paren-mode 1)
   (electric-pair-mode 1))
 
+(use-package eldoc-box
+  :ensure t
+  :hook (eglot-managed-mode . eldoc-box-hover-at-point-mode)
+  :config
+  (setq eldoc-box-max-pixel-width 400   ;; Control popup width
+        eldoc-box-max-pixel-height 300)) ;; Control popup height
+
 (use-package eglot
   :init
   (defun my-defer-eglot ()
