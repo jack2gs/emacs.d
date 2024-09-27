@@ -7,6 +7,21 @@
 			             ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
 			             ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
 
+
+(use-package fzf
+  :ensure t
+  :bind
+  ("C-c f" . fzf))
+
+(use-package rg
+  :ensure t
+  :config
+  (rg-enable-default-bindings))
+
+(use-package magit
+  :ensure t
+  :bind ("C-x g" . magit-status))
+
 (use-package rainbow-mode
   :ensure t)
 
@@ -133,6 +148,8 @@ If the name ends with '/', it's a directory otherwise it's a file."
   (add-to-list 'eglot-server-programs
 			   '((less-css-mode :language-id "less") . ("vscode-css-language-server" "--stdio")))
   (add-to-list 'eglot-server-programs
+               '((web-mode typescript-mode) . ("typescript-language-server" "--stdio")))
+  (add-to-list 'eglot-server-programs
                '((c-mode c++-mode c-ts-mode c++-ts-mode)
                  . ("clangd"
                     "-j=8"
@@ -160,7 +177,8 @@ If the name ends with '/', it's a directory otherwise it's a file."
           c++-ts-mode
           python-base-mode
           rust-ts-mode
-          tsx-ts-mode)
+          tsx-ts-mode
+          web-mode)
          . eglot-ensure))
 
 (use-package flycheck
@@ -381,6 +399,28 @@ If the name ends with '/', it's a directory otherwise it's a file."
   :ensure t
   :after yasnippet)
 
+
+(use-package web-mode
+  :ensure t
+  :mode ("\\.js[x]?\\'" "\\.ts[x]?\\'" "\\.[s]?css\\'")
+  :config
+  (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")
+                                       ("tsx" . "\\.ts[x]?\\'")))
+  ;; Web-mode tag auto-closing and other features
+  (setq web-mode-enable-auto-closing t)   ;; Auto-close tags like <div></div>
+  (setq web-mode-enable-auto-pairing t)   ;; Auto-pair quotes, etc.
+  (setq web-mode-enable-auto-quoting t)   ;; Auto-insert quotes after =
+  (setq web-mode-enable-auto-indentation t) ;; Auto-indent when typing
+  )
+
+
+(use-package emmet-mode
+  :ensure t
+  :hook ((web-mode css-mode scss-mode) . emmet-mode)
+  :config
+  (setq emmet-move-cursor-between-quotes t)  ;; Move between quotes after expansion
+  )
+
 (use-package emmet-mode
   :ensure t
   :hook ((sgml-mode web-mode css-mode css-ts-mode scss-mode scss-ts-mode html-mode html-ts-mode) . emmet-mode)
@@ -505,13 +545,13 @@ If the name ends with '/', it's a directory otherwise it's a file."
               (c++-mode)
             (c-mode))))
       (add-to-list 'auto-mode-alist '("\\.h\\'" . my-c-c++-header-mode))
-      (dolist (mapping '(("\\.ts\\'" . tsx-ts-mode)
-			             ("\\.tsx\\'" . tsx-ts-mode)
-			             ("\\.js\\'" . tsx-ts-mode)
-			             ("\\.jsx\\'" . tsx-ts-mode)
-                         ("\\.rs\\'" . rust-ts-mode)
-                         ("\\.scss\\'" . scss-mode)
-                         ("\\.less\\'" . less-css-mode)
+      (dolist (mapping '(;; ("\\.ts\\'" . tsx-ts-mode)
+			             ;; ("\\.tsx\\'" . tsx-ts-mode)
+			             ;; ("\\.js\\'" . tsx-ts-mode)
+			             ;; ("\\.jsx\\'" . tsx-ts-mode)
+                         ;; ("\\.rs\\'" . rust-ts-mode)
+                         ;; ("\\.scss\\'" . scss-mode)
+                         ;; ("\\.less\\'" . less-css-mode)
 			             ("CMakeLists\\.txt\\'" . cmake-ts-mode)
 			             ("\\.cmake\\'" . cmake-ts-mode)))
         (add-to-list 'auto-mode-alist mapping))
