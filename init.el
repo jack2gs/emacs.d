@@ -2,11 +2,20 @@
 ;;; Commentary:
 ;;; startup script
 ;;; Code:
-(setq package-archives '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-                         ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-			             ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
-			             ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
 
+(setq-local enable-full-feature t)
+
+
+(if enable-full-feature
+    (setq package-archives '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+                             ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
+			                 ("melpa-stable" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")
+			                 ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+  
+  (setq package-archives '(("gnu"    . "https://elpa.gnu.org/packages/")
+                           ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+                           ("melpa-stable" . "https://melpa.org/packages/")
+                           ("melpa" . "https://melpa.org/packages/"))))
 
 (use-package fzf
   :ensure t
@@ -355,7 +364,7 @@ If the name ends with '/', it's a directory otherwise it's a file."
   )
 
 (use-package corfu-terminal
-  :unless window-system
+  :if (and (not window-system) enable-full-feature)
   :ensure t
   :after corfu
   :config
@@ -402,7 +411,7 @@ If the name ends with '/', it's a directory otherwise it's a file."
 
 (use-package web-mode
   :ensure t
-  :mode ("\\.js[x]?\\'" "\\.ts[x]?\\'" "\\.[s]?css\\'")
+  :mode ("\\.js[x]?\\'" "\\.ts[x]?\\'")
   :config
   (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")
                                        ("tsx" . "\\.ts[x]?\\'")))
@@ -457,6 +466,7 @@ If the name ends with '/', it's a directory otherwise it's a file."
 
 ;; Optionally enable icons in Corfu
 (use-package kind-icon
+  :if enable-full-feature
   :ensure t
   :after corfu
   :custom
