@@ -363,12 +363,21 @@ If the name ends with '/', it's a directory otherwise it's a file."
   ;;(advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
   )
 
-(use-package corfu-terminal
-  :if (and (not window-system) enable-full-feature)
-  :ensure t
-  :after corfu
-  :config
-  (corfu-terminal-mode))
+(when (and (not window-system) enable-full-feature)
+  (use-package corfu-terminal
+    :ensure t
+    :after corfu
+    :config
+    (corfu-terminal-mode))
+  (use-package kind-icon
+    :ensure t
+    :after corfu
+    :custom
+    (kind-icon-default-face 'corfu-default)
+    ;;(kind-icon-use-icons nil)
+    :config
+    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+  )
 
 (use-package cape
   :ensure t
@@ -465,15 +474,6 @@ If the name ends with '/', it's a directory otherwise it's a file."
 
 
 ;; Optionally enable icons in Corfu
-(use-package kind-icon
-  :if enable-full-feature
-  :ensure t
-  :after corfu
-  :custom
-  (kind-icon-default-face 'corfu-default)
-  ;;(kind-icon-use-icons nil)
-  :config
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package zenburn-theme
   :ensure t
