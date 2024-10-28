@@ -335,10 +335,12 @@ If the name ends with '/', it's a directory otherwise it's a file."
   (corfu-cycle t)
   (corfu-auto t)
   (corfu-auto-prefix 2)
-  (corfu-quit-at-boundary nil)
-  (corfu-quit-no-match t)
+  (corfu-quit-at-boundary 'separator)
+  (corfu-quit-no-match 'separator)
   (corfu-preview-current nil)
+  (corfu-preselect-first nil)
   (corfu-preselect 'directory)
+  (corfu-on-exact-match 'show)
   ;; Option 1: Specify explicitly to use Orderless for Eglot
   (completion-category-overrides '((eglot (styles orderless))
                                    (eglot-capf (styles orderless))))
@@ -359,8 +361,8 @@ If the name ends with '/', it's a directory otherwise it's a file."
                           (corfu-mode -1))))
   :config
   ;; when in shell or eshell, when press RET, it will send it to the shell directly, which will save another RET.
-  (define-key corfu-map (kbd "RET")
-              `(menu-item "" nil :filter ,(lambda (&optional _) (and (or (derived-mode-p 'eshell-mode) (derived-mode-p 'comint-mode)) #'corfu-send))))
+  ;; (define-key corfu-map (kbd "RET")
+  ;;             `(menu-item "" nil :filter ,(lambda (&optional _) (and (or (derived-mode-p 'eshell-mode) (derived-mode-p 'comint-mode)) #'corfu-send))))
   (add-hook 'eglot-managed-mode-hook #'my/eglot-capf)
   ;;(advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
   )
@@ -412,6 +414,8 @@ If the name ends with '/', it's a directory otherwise it's a file."
   :ensure t
   ;; eglot looks like will enable it by default for lsp
   ;; https://github.com/joaotavora/eglot/blob/db91d58374627a195b731a61bead9b4f84a7e4bc/eglot.el#L1797
+  :init
+  (setq yas-trigger-key 'nil)
   :hook
   (prog-mode . yas-minor-mode))
 

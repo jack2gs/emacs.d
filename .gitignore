@@ -62,3 +62,4 @@ projects
 custom-vars.el
 eshell
 irony
+transient/
