@@ -63,3 +63,4 @@ custom-vars.el
 eshell
 irony
 transient/
+url/
