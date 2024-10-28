@@ -354,7 +354,9 @@ If the name ends with '/', it's a directory otherwise it's a file."
   :hook (
          (after-init . global-corfu-mode)
          (corfu-mode . corfu-popupinfo-mode)
-         (eshell-mode . (lambda () (setq-local corfu-auto nil))))
+         (eshell-mode . (lambda ()
+                          (setq-local corfu-auto nil)
+                          (corfu-mode -1))))
   :config
   ;; when in shell or eshell, when press RET, it will send it to the shell directly, which will save another RET.
   (define-key corfu-map (kbd "RET")
@@ -474,6 +476,15 @@ If the name ends with '/', it's a directory otherwise it's a file."
 
 
 ;; Optionally enable icons in Corfu
+(use-package kind-icon
+  :ensure t
+  :disabled t
+  :after corfu
+  :custom
+  (kind-icon-default-face 'corfu-default)
+  (kind-icon-use-icons nil)
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package zenburn-theme
   :ensure t
