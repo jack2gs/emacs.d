@@ -17,6 +17,13 @@
                            ("melpa-stable" . "https://melpa.org/packages/")
                            ("melpa" . "https://melpa.org/packages/"))))
 
+(let ((backup-dir "~/.emacs.d/_backups/"))
+  ;; Set the custom backup directory
+  (setq backup-directory-alist `(("." . ,backup-dir)))
+  ;; Create the backup directory if it doesn't exist
+  (unless (file-exists-p backup-dir)
+    (make-directory backup-dir t)))
+
 (use-package fzf
   :ensure t
   :bind
@@ -477,18 +484,6 @@ If the name ends with '/', it's a directory otherwise it's a file."
             ;; Allow for other completions to follow
             :exlcusive 'no)))
   )
-
-
-;; Optionally enable icons in Corfu
-(use-package kind-icon
-  :ensure t
-  :disabled t
-  :after corfu
-  :custom
-  (kind-icon-default-face 'corfu-default)
-  (kind-icon-use-icons nil)
-  :config
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package zenburn-theme
   :ensure t
