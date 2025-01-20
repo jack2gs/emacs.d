@@ -136,13 +136,21 @@ If the name ends with '/', it's a directory otherwise it's a file."
   (show-paren-mode 1)
   (electric-pair-mode 1))
 
+
 (use-package eldoc-box
-  :ensure t
-  :if (display-graphic-p)
-  :hook (eglot-managed-mode . eldoc-box-hover-at-point-mode)
-  :config
-  (setq eldoc-box-max-pixel-width 400   ;; Control popup width
-        eldoc-box-max-pixel-height 300)) ;; Control popup height
+      :diminish (eldoc-box-hover-mode eldoc-box-hover-at-point-mode)
+      :custom
+      (eldoc-box-lighter nil)
+      (eldoc-box-only-multi-line t)
+      (eldoc-box-clear-with-C-g t)
+      :custom-face
+      (eldoc-box-border ((t (:inherit posframe-border :background unspecified))))
+      (eldoc-box-body ((t (:inherit tooltip))))
+      ;;:hook ((eglot-managed-mode . eldoc-box-hover-at-point-mode))
+      :config
+      ;; Prettify `eldoc-box' frame
+      (setf (alist-get 'left-fringe eldoc-box-frame-parameters) 8
+            (alist-get 'right-fringe eldoc-box-frame-parameters) 8))
 
 (use-package eglot
   :init
@@ -166,7 +174,7 @@ If the name ends with '/', it's a directory otherwise it's a file."
   (add-to-list 'eglot-server-programs
                '((web-mode typescript-mode) . ("typescript-language-server" "--stdio")))
   (add-to-list 'eglot-server-programs
-               '((c-mode c++-mode c-ts-mode c++-ts-mode)
+               '((c-mode c++-mode c++-ts-mode)
                  . ("clangd"
                     "-j=8"
                     "--log=error"
@@ -681,6 +689,7 @@ If the name ends with '/', it's a directory otherwise it's a file."
 
   (general-define-key
    :keymaps 'prog-mode-map
+   "<f1>" 'eldoc-box-help-at-point
    "<f5>" 'dape
    "<f9>" 'dape-breakpoint-toggle
    "<f10>" 'dape-next
