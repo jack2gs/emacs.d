@@ -388,14 +388,14 @@ If the name ends with '/', it's a directory otherwise it's a file."
     :after corfu
     :config
     (corfu-terminal-mode))
-  (use-package kind-icon
-    :ensure t
-    :after corfu
-    :custom
-    (kind-icon-default-face 'corfu-default)
-    ;;(kind-icon-use-icons nil)
-    :config
-    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+  ;; (use-package kind-icon
+  ;;   :ensure t
+  ;;   :after corfu
+  ;;   :custom
+  ;;   (kind-icon-default-face 'corfu-default)
+  ;;   ;;(kind-icon-use-icons nil)
+  ;;   :config
+  ;;   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
   )
 
 (use-package cape
@@ -508,9 +508,9 @@ If the name ends with '/', it's a directory otherwise it's a file."
   :hook
   ((prog-mode text-mode dired-mode) . hl-line-mode))
 
-(use-package all-the-icons
-  :ensure t
-  :if (display-graphic-p))
+;; (use-package all-the-icons
+;;   :ensure t
+;;   :if (display-graphic-p))
 
 (use-package dashboard
   :ensure t
@@ -649,6 +649,15 @@ If the name ends with '/', it's a directory otherwise it's a file."
 
 (use-package goto-chg
   :ensure t)
+
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'org-mode-hook 'flyspell-mode)
+
+;; Enable Flyspell in programming modes for comments and strings
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+;; Optionally, you can set the dictionary (if not already set)
+(setq ispell-dictionary "en_US")
 
 (use-package general
   :ensure t
