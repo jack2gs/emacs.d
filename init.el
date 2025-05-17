@@ -138,7 +138,8 @@ If the name ends with '/', it's a directory otherwise it's a file."
 
 
 (use-package eldoc-box
-      :diminish (eldoc-box-hover-mode eldoc-box-hover-at-point-mode)
+  :diminish (eldoc-box-hover-mode eldoc-box-hover-at-point-mode)
+  :ensure t
       :custom
       (eldoc-box-lighter nil)
       (eldoc-box-only-multi-line t)
@@ -707,6 +708,51 @@ If the name ends with '/', it's a directory otherwise it's a file."
    ;; lsp xref keybindings
    "C-<f12>" 'eglot-find-implementation
    "C-M-<f12>" 'eglot-find-declaration))
+
+
+
+;; Define our filename finder
+(defun my-compilation-eslint-filename-for-msg ()
+  "Return the filename for an ESLint error by looking backward to the first non-whitespace line."
+  (save-excursion
+    (beginning-of-line)
+    ;; Keep going up until we find a non-whitespace line or beginning of buffer
+    (while (and (not (bobp))  ; not beginning of buffer
+                (looking-at-p "^[[:space:]]"))  ; current line starts with whitespace
+      (forward-line -1))
+    ;; Now return the filename (whole line)
+    (buffer-substring (line-beginning-position) (line-end-position))))
+
+(add-to-list 'compilation-error-regexp-alist 'eslint-multiline)
+(add-to-list 
+  'compilation-error-regexp-alist-alist
+  '(eslint-multiline
+    ;; Matches the error/warning lines
+    "^[[:space:]]+\\([0-9]+\\):\\([0-9]+\\)[[:space:]]+\\(warning\\|error\\)[[:space:]]+\\(.*\\)$"
+    my-compilation-eslint-filename-for-msg  ;; Special function to get filename
+    1    ;; line
+    2    ;; column
+    (3 . 4)  ;; type and message
+    ))
+
+
+;; (defun my-compilation-eslint-filename ()
+;;   "Return the filename for an ESLint error if the current line is a filename
+;; and the next line contains an error/warning."
+;;   (save-excursion
+;;     (let ((line (buffer-substring (line-beginning-position) (line-end-position))))
+;;       (message line)
+;;       (forward-line 1)
+;;       (when (looking-at-p "^[[:space:]]+\\([0-9]+\\):\\([0-9]+\\)[[:space:]]+\\(warning\\|error\\)")
+;;         line))))
+
+;; ;; Add pattern to match ESLint filename lines
+;; (add-to-list 'compilation-error-regexp-alist 'eslint-filename-line)
+;; (add-to-list 
+;;   'compilation-error-regexp-alist-alist
+;;   '(eslint-filename-line
+;;     "^/\\(?:[^/ \n]+/\\)+[^/ \n]+$"
+;;     my-compilation-eslint-filename))
 
 (provide 'init)
 ;;; init.el ends here
