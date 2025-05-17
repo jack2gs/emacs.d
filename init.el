@@ -754,5 +754,8 @@ If the name ends with '/', it's a directory otherwise it's a file."
 ;;     "^/\\(?:[^/ \n]+/\\)+[^/ \n]+$"
 ;;     my-compilation-eslint-filename))
 
+(use-package markdown-mode
+  :ensure t)
+
 (provide 'init)
 ;;; init.el ends here
